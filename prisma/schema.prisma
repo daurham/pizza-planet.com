@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// https://www.prisma.io/docs/guides/database/troubleshooting-orm/help-articles/working-with-many-to-many-relations
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Topping {
+  id                Int      @id @default(autoincrement())
+  name              String   @unique @db.Text
+  price             String?  @db.Text
+  pricingMeasurment String?  @db.Text
+  supplier          Supplier @relation(fields: [supplierId], references: [id])
+  supplierId        Int      @db.Integer
+  img               String?  @db.Text
+}
+
+model Pizza {
+  id           Int     @id @default(autoincrement())
+  name         String  @unique @db.Text
+  createdBy    Staff   @relation(fields: [staffId], references: [id])
+  staffId      Int     @db.Integer
+  polularity   Int?    @db.Integer
+  price        String? @db.Text
+  calories     Int?    @db.Integer
+  instructions String? @db.Text
+  notes        String? @db.Text
+  img          String? @db.Text
+}
+
+model Staff {
+  id       Int     @id @default(autoincrement())
+  username String  @db.Text
+  email    String  @db.Text
+  password String  @db.Text
+  Pizza    Pizza[]
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  username String @db.Text
+  email    String @db.Text
+  password String @db.Text
+}
+
+model Supplier {
+  id      Int       @id @default(autoincrement())
+  name    String    @db.Text
+  number  String    @db.Text
+  email   String    @db.Text
+  Topping Topping[]
+}
