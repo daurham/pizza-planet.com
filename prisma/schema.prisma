@@ -15,18 +15,18 @@ model Topping {
   id                Int      @id @default(autoincrement())
   name              String   @unique @db.Text
   price             String?  @db.Text
-  pricingMeasurment String?  @db.Text
-  supplier          Supplier @relation(fields: [supplierId], references: [id])
-  supplierId        Int      @db.Integer
+  pricingMeasurement String?  @db.Text
+  // supplier          Supplier @relation(fields: [supplierId], references: [id])
+  // supplierId        Int      @db.Integer
   img               String?  @db.Text
 }
 
 model Pizza {
   id           Int     @id @default(autoincrement())
   name         String  @unique @db.Text
-  createdBy    Staff   @relation(fields: [staffId], references: [id])
-  staffId      Int     @db.Integer
-  polularity   Int?    @db.Integer
+  // createdBy    User   @relation(fields: [staffId], references: [id])
+  // staffId      Int     @db.Integer
+  popularity   Int?    @db.Integer
   price        String? @db.Text
   calories     Int?    @db.Integer
   instructions String? @db.Text
@@ -34,25 +34,19 @@ model Pizza {
   img          String? @db.Text
 }
 
-model Staff {
-  id       Int     @id @default(autoincrement())
-  username String  @db.Text
-  email    String  @db.Text
-  password String  @db.Text
-  Pizza    Pizza[]
-}
-
 model User {
   id       Int    @id @default(autoincrement())
   username String @db.Text
   email    String @db.Text
   password String @db.Text
+  role String @db.Text
+  // Pizza    Pizza[]
 }
 
-model Supplier {
-  id      Int       @id @default(autoincrement())
-  name    String    @db.Text
-  number  String    @db.Text
-  email   String    @db.Text
-  Topping Topping[]
-}
+// model Supplier {
+//   id      Int       @id @default(autoincrement())
+//   name    String    @db.Text
+//   number  String    @db.Text
+//   email   String    @db.Text
+  // Topping Topping[]
+// }

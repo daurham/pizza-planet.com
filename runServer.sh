@@ -6,6 +6,6 @@
 export NVM_DIR=$HOME/.nvm;
 source $NVM_DIR/nvm.sh;
 echo "Current node:";
-nvm -v
+node -v
 nvm use 16.17
 nodemon server/dist/index.js

@@ -16,6 +16,15 @@ app.use(express.json());
 
 app.use('/', router);
 
+app.get('/*', (req, res) => {
+  // console.log('coming in at a random route, to:', CLIENT);
+  res.sendFile(path.join(CLIENT + '/index.html'), (err) => {
+    if (err) {
+      res.status(500).send(err);
+    }
+  });
+});
+
 app.listen(PORT, () => console.log(`Running at ${URL}`));
 
 export {};

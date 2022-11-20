@@ -22,6 +22,7 @@ router.use((req, res, next) => {
     console.log(`${req.method} Request: ${new Date().toLocaleTimeString()}`);
     next();
 });
+// router.get('/login')
 // router.get('/movie', getMovieData);
 // router.post('/movie', postMovieData);
 // router.delete('/movie', deleteMovieData);
