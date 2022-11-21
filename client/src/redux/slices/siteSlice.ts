@@ -5,10 +5,10 @@ interface InitState {
 }
 
 const initialState: InitState = {
-  listType: 'topping',
+  listType: 'pizza',
 };
 
-export const SitesSlice = createSlice({
+export const sitesSlice = createSlice({
   name: 'Sites',
   initialState,
   reducers: {
@@ -16,18 +16,16 @@ export const SitesSlice = createSlice({
       if (state.listType === 'pizza') {
         state.listType = 'topping';
         return;
+        // return 'topping';
       }
       if (state.listType === 'topping') {
         state.listType = 'pizza';
         return;
-      } 
-      if (state.listType === null) {
-        state.listType = 'topping';
-        return;
-      } 
+        // return 'pizza';
+      }
     },
   },
 });
 
-export const { switchList } = SitesSlice.actions;
-export default SitesSlice.reducer;
+export const { switchList } = sitesSlice.actions;
+export default sitesSlice.reducer;

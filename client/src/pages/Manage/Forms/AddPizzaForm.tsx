@@ -27,7 +27,7 @@ export default function AddForm({refresh}: Props) {
       notes,
       instructions,
       img,
-      staffId: user!.id
+      staffId: user!.id,
     });
     // TODO: pass in refresh()
   };

@@ -10,7 +10,7 @@ export interface UserType {
 
 interface InitState {
   users: UserType[];
-  user: null | UserType; 
+  user: null | UserType;
 }
 
 const initialState: InitState = {
@@ -22,22 +22,12 @@ export const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    addUser: (state, action) => {
-      // state.array.push(action.payload);
-      // Sign up
-    },
-    checkUserAuthorization: (state, action) => {},
-    updateUser: (state, action) => {},
     setUser: (state, action) => {
-      // state.user = action.payload;
-    },
-    getUser: (state, action) => {
-    //   console.log('Got User', state.array, action.payload);
-    //   console.log(state.array);
-    //   state.array.map((a) => console.log(a));
+      console.log('Seeting thi as user data:', action.payload);
+      state.user = action.payload;
     },
   },
 });
 
-export const { addUser, setUser, updateUser, getUser } = usersSlice.actions;
+export const { setUser } = usersSlice.actions;
 export default usersSlice.reducer;

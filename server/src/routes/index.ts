@@ -1,41 +1,46 @@
 // https://expressjs.com/en/guide/routing.html
 import { Router } from 'express';
-// import {
-//   deleteMovieData,
-//   getMovieData,
-//   postMovieData,
-//   checkUserData,
-//   postUserData,
-//   updateMovieData,
-//   getFoodData,
-//   postFoodData,
-//   deleteFoodData,
-//   updateFoodData,
-// } from '../controller';
+import {
+  authenticateUserLogin,
+  postUserData,
+  deletePizzaData,
+  getPizzaData,
+  postPizzaData,
+  updatePizzaData,
+  getToppingData,
+  postToppingData,
+  deleteToppingData,
+  updateToppingData,
+  logIntoUser,
+} from '../controller';
 
 const router = Router();
 
 router.use((req, res, next) => {
   // console.log('req', req);
-  // console.log('req.body', req.body);
-  // console.log('req.p', req.params);
-  console.log(`${req.method} Request: ${new Date().toLocaleTimeString()}`);
+  // console.log('req.body:', req.body);
+  // console.log('req.params:', req.params);
+  // console.log('req.query:', req.query);
+  console.log(`${req.url} Request: ${new Date().toLocaleTimeString()}`);
+  // console.log(`${req.method} Request: ${new Date().toLocaleTimeString()}`);
   next();
 });
 
-// router.get('/login')
+// Login
+router.post('/user/auth', authenticateUserLogin);
+router.get('/user', logIntoUser);
+router.post('/user', postUserData);
 
-// router.get('/movie', getMovieData);
-// router.post('/movie', postMovieData);
-// router.delete('/movie', deleteMovieData);
-// router.patch('/movie', updateMovieData);
+// Pizza
+router.get('/pizza', getPizzaData);
+router.post('/pizza', postPizzaData);
+router.delete('/pizza', deletePizzaData);
+router.patch('/pizza', updatePizzaData);
 
-// router.post('/user/Auth', checkUserData);
-// router.post('/user', postUserData);
-
-// router.get('/food', getFoodData);
-// router.post('/food', postFoodData);
-// router.delete('/food', deleteFoodData);
-// router.patch('/food', updateFoodData);
+// Topping
+router.get('/topping', getToppingData);
+router.post('/topping', postToppingData);
+router.delete('/topping', deleteToppingData);
+router.patch('/topping', updateToppingData);
 
 export default router;

@@ -16,9 +16,8 @@ const combinedReducer = combineReducers({
 
 export type RootState = ReturnType<typeof combinedReducer>;
 
-export type AppDispatch = typeof store.dispatch
+export type AppDispatch = typeof store.dispatch;
 
 export const store = configureStore({
   reducer: combinedReducer,
 });
-

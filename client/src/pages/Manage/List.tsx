@@ -1,10 +1,10 @@
 import React from 'react';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import { ToppingType } from '../../redux/slices/toppingsSlice';
 import { PizzaType } from '../../redux/slices/pizzasSlice';
 import PizzaEntry from './Entry/PizzaEntry';
 import ToppingEntry from './Entry/ToppingEntry';
 // import { useAppSelector } from '../../redux/hooks';
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 
 interface ToppingProps {
   type: 'topping';
@@ -26,8 +26,12 @@ type Props = PizzaProps | ToppingProps;
 
 export default function List({ entries, type, refetch }: Props) {
   // const { listType } = useAppSelector((state) => state.site);
+  console.log('entries', entries);
+  if (!entries) return <p>Loading..</p>;
   return (
     <div>
+      {/* {type} */}
+      {/* {JSON.stringify(entries)} */}
       {type === 'pizza' &&
         entries.map((e) => (
           <PizzaEntry
@@ -53,7 +57,7 @@ export default function List({ entries, type, refetch }: Props) {
             name={e.name}
             price={e.price}
             img={e.img}
-            priceMeasurement={e.priceMeasurement}
+            pricingMeasurement={e.pricingMeasurement}
             supplier={e.supplier}
             supplierId={e.supplierId}
             refetch={refetch}
