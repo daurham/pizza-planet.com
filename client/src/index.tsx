@@ -1,14 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from 'react-query';
-// import { ReactQueryDevtools } from 'react-query/devtools';
-// import App from './App';
-import 'bootstrap/dist/css/bootstrap.min.css';
-// import './index.css';
-
-const queryClient = new QueryClient();
-
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import Layout from './pages/Header';
 import Home from './pages/Home/Home';
 import Login from './pages/Login';
@@ -16,8 +10,13 @@ import Order from './pages/Order';
 import NoPage from './pages/NoPage';
 import ErrorPage from './pages/ErrorPage';
 import Manage from './pages/Manage/Manage';
-import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import './index.css';
+// import { ReactQueryDevtools } from 'react-query/devtools';
+// import App from './App';
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (

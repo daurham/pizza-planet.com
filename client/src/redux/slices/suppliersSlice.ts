@@ -1,16 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit';
 
 export interface SupplierType {
-  id:      number
-  name:    string
-  number:  string
-  email:   string
+  id: number;
+  name: string;
+  number: string;
+  email: string;
   // Topping?: T
 }
 
 type InitSuppliers = {
-  suppliers: SupplierType[]
-}
+  suppliers: SupplierType[];
+};
 
 const initialState: InitSuppliers = {
   suppliers: [],
@@ -22,12 +22,12 @@ export const suppliersSlice = createSlice({
   reducers: {
     addSupplier: (state, action) => {
       const newSupplier: any = action.payload;
-      // Assume! This is for when I validate a Suppliers uniqueness, post to db, THEN get Suppliers, 
+      // Assume! This is for when I validate a Suppliers uniqueness, post to db, THEN get Suppliers,
       //  --I'll add to here.
-      state.suppliers = [ newSupplier, ...state.suppliers];
+      state.suppliers = [newSupplier, ...state.suppliers];
     },
     removeSupplier: (state, action) => {
-      // ASSUME, I'll remove the suppliers via request first, THEN invoke this fn to ?? 
+      // ASSUME, I'll remove the suppliers via request first, THEN invoke this fn to ??
       // Not 100% wat makes the most since
       // ELSE, Why not JUS use "update Supplier"
 
@@ -41,10 +41,7 @@ export const suppliersSlice = createSlice({
       // let movie = state.suppliers.filter((m) => m.title === action.payload)[0]
       // movie.hasWatched = !movie.hasWatched;
     },
-    getSupplier: (state, action) => {
-
-    },
-
+    getSupplier: (state, action) => {},
   },
 });
 

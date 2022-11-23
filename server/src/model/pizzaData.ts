@@ -21,6 +21,7 @@ export const postPizza = async (
   instructions: string,
   notes: string,
   img: string,
+  toppings: string,
   res: Response
 ) => {
   try {
@@ -33,6 +34,7 @@ export const postPizza = async (
         instructions,
         notes,
         img,
+        toppings,
       },
     });
     res.send(success);
@@ -64,6 +66,7 @@ export const updatePizza = async (
   instructions: string,
   notes: string,
   img: string,
+  toppings: string,
   res: Response
 ) => {
   try {
@@ -77,6 +80,7 @@ export const updatePizza = async (
         price,
         instructions,
         notes,
+        toppings,
         img,
       },
     });

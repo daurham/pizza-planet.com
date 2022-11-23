@@ -9,25 +9,26 @@ export interface UserType {
 }
 
 interface InitState {
-  users: UserType[];
   user: null | UserType;
 }
 
 const initialState: InitState = {
-  users: [],
   user: null,
 };
 
-export const usersSlice = createSlice({
-  name: 'users',
+export const userSlice = createSlice({
+  name: 'user',
   initialState,
   reducers: {
-    setUser: (state, action) => {
-      console.log('Seeting thi as user data:', action.payload);
+    logInUser: (state, action) => {
+      // console.log('Seeting thi as user data:', action.payload);
       state.user = action.payload;
+    },
+    logOutUser: (state) => {
+      state.user = null;
     },
   },
 });
 
-export const { setUser } = usersSlice.actions;
-export default usersSlice.reducer;
+export const { logInUser, logOutUser } = userSlice.actions;
+export default userSlice.reducer;

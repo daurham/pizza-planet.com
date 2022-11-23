@@ -20,7 +20,6 @@ export const sitesSlice = createSlice({
       }
       if (state.listType === 'topping') {
         state.listType = 'pizza';
-        return;
         // return 'pizza';
       }
     },

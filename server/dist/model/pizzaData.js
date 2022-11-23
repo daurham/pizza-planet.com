@@ -27,7 +27,7 @@ const getPizza = (res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getPizza = getPizza;
-const postPizza = (name, calories, popularity, price, instructions, notes, img, res) => __awaiter(void 0, void 0, void 0, function* () {
+const postPizza = (name, calories, popularity, price, instructions, notes, img, toppings, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const success = yield database_1.default.pizza.create({
             data: {
@@ -38,6 +38,7 @@ const postPizza = (name, calories, popularity, price, instructions, notes, img, 
                 instructions,
                 notes,
                 img,
+                toppings,
             },
         });
         res.send(success);
@@ -63,7 +64,7 @@ const deletePizza = (name, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.deletePizza = deletePizza;
-const updatePizza = (name, calories, popularity, price, instructions, notes, img, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updatePizza = (name, calories, popularity, price, instructions, notes, img, toppings, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const success = yield database_1.default.pizza.update({
             where: {
@@ -75,6 +76,7 @@ const updatePizza = (name, calories, popularity, price, instructions, notes, img
                 price,
                 instructions,
                 notes,
+                toppings,
                 img,
             },
         });

@@ -12,13 +12,13 @@ datasource db {
 }
 
 model Topping {
-  id                Int      @id @default(autoincrement())
-  name              String   @unique @db.Text
-  price             String?  @db.Text
-  pricingMeasurement String?  @db.Text
+  id                 Int     @id @default(autoincrement())
+  name               String  @unique @db.Text
+  price              String? @db.Text
+  pricingMeasurement String? @db.Text
   // supplier          Supplier @relation(fields: [supplierId], references: [id])
   // supplierId        Int      @db.Integer
-  img               String?  @db.Text
+  img                String? @db.Text
 }
 
 model Pizza {
@@ -32,6 +32,7 @@ model Pizza {
   instructions String? @db.Text
   notes        String? @db.Text
   img          String? @db.Text
+  toppings     String? @db.Text
 }
 
 model User {
@@ -39,7 +40,7 @@ model User {
   username String @db.Text
   email    String @db.Text
   password String @db.Text
-  role String @db.Text
+  role     String @db.Text
   // Pizza    Pizza[]
 }
 
@@ -48,5 +49,5 @@ model User {
 //   name    String    @db.Text
 //   number  String    @db.Text
 //   email   String    @db.Text
-  // Topping Topping[]
+// Topping Topping[]
 // }

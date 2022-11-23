@@ -7,8 +7,8 @@ const getPizzaData = (req, res) => {
 };
 exports.getPizzaData = getPizzaData;
 const postPizzaData = (req, res) => {
-    const { name, calories, popularity, price, instructions, notes, img } = req.body;
-    (0, model_1.postPizza)(name, calories, popularity, price, instructions, notes, img, res);
+    const { name, calories, popularity, price, instructions, notes, img, toppings } = req.body;
+    (0, model_1.postPizza)(name, calories, popularity, price, instructions, notes, img, toppings, res);
 };
 exports.postPizzaData = postPizzaData;
 const deletePizzaData = (req, res) => {
@@ -17,7 +17,7 @@ const deletePizzaData = (req, res) => {
 };
 exports.deletePizzaData = deletePizzaData;
 const updatePizzaData = (req, res) => {
-    const { name, calories, popularity, price, instructions, notes, img } = req.body;
-    (0, model_1.updatePizza)(name, calories, popularity, price, instructions, notes, img, res);
+    const { name, calories, popularity, price, instructions, notes, img, toppings } = req.body;
+    (0, model_1.updatePizza)(name, calories, popularity, price, instructions, notes, img, toppings, res);
 };
 exports.updatePizzaData = updatePizzaData;

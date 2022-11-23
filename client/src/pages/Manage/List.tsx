@@ -26,7 +26,7 @@ type Props = PizzaProps | ToppingProps;
 
 export default function List({ entries, type, refetch }: Props) {
   // const { listType } = useAppSelector((state) => state.site);
-  console.log('entries', entries);
+  // console.log('entries', entries);
   if (!entries) return <p>Loading..</p>;
   return (
     <div>
@@ -37,16 +37,17 @@ export default function List({ entries, type, refetch }: Props) {
           <PizzaEntry
             key={e.id}
             id={e.id}
-            staffId={e.staffId}
+            // staffId={e.staffId}
+            // createdBy={e.createdBy}
             name={e.name}
             calories={e.calories}
-            createdBy={e.createdBy}
             popularity={e.popularity}
             price={e.price}
             instructions={e.instructions}
             notes={e.notes}
             img={e.img}
             refetch={refetch}
+            toppings={e.toppings}
           />
         ))}
       {type === 'topping' &&
@@ -58,8 +59,8 @@ export default function List({ entries, type, refetch }: Props) {
             price={e.price}
             img={e.img}
             pricingMeasurement={e.pricingMeasurement}
-            supplier={e.supplier}
-            supplierId={e.supplierId}
+            // supplier={e.supplier}
+            // supplierId={e.supplierId}
             refetch={refetch}
           />
         ))}

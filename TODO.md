@@ -1,12 +1,6 @@
-Getting list to switch accurately:
+TODO:
 
-refetch() on type change (works)
-
-- should update the type value
-- refetch
-  - da  
-- set the current data as "sorted" values
-- populate the list with new values
-
-
-- issue, "sorted" values are previous values... theres a delay..?
+- add a toppingsList to the db
+- remigrate it
+- fix the types
+- enable the ability to edit the 

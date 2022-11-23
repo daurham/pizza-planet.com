@@ -2,35 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import List from './List';
 import ListHeader from './ListHeader';
-import { PizzaType } from '../../redux/slices/pizzasSlice';
+import { PizzaType, storePizzas } from '../../redux/slices/pizzasSlice';
 import { ToppingType } from '../../redux/slices/toppingsSlice';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 
 type EntriesT = (PizzaType[] | ToppingType[]) | (PizzaType | ToppingType)[];
-// type FetchKey = { queryKey: [] }
 const fetchEntries = async ({ queryKey }: any) => {
-  // console.log(queryKey);
   const { type } = queryKey[1];
-  // const [key, { type }] = queryKey;
-  const url = type ? `/${type}` : '/pizza';
-  console.log('fetchEntries: ', url);
-  const res = await fetch(url); // TODO: Consider using axios to remain consistent
+  const res = await fetch(type ? `/${type}` : '/pizza'); // TODO: Consider using axios to remain consistent
   return res.json();
 };
 
 export default function AdminManage() {
-  // const { users } = useAppSelector(state => state)
+  // const { user } = useAppSelector(state => state)
+  const dispatch = useAppDispatch();
   const type = useAppSelector((state) => state.site.listType);
-  // const [type, setType] = useState('topping');
   const { data, status, refetch } = useQuery({
     queryKey: ['entryData', { type }],
-    // queryKey: ['entryData', { type }],
     queryFn: fetchEntries,
-    staleTime: Infinity,
+    // staleTime: Infinity,
   });
-  if (data) console.log('fetched', type, ' data:', data);
   const [entries, setEntries] = useState<EntriesT>(data);
   const [sortedEntries, setSortedEntries] = useState<EntriesT>(data);
+  if (data) console.log('fetched', type, ' data:', data);
 
   const sortEntries = (
     method: 'popular' | 'price' | 'alphabet' | 'all',
@@ -72,11 +66,11 @@ export default function AdminManage() {
       setSortedEntries([...result]);
     }
   };
-
   useEffect(() => {
-    console.log('data changed');
+    // console.log('data changed');
     if (data) {
       console.log('data updating');
+      if (type === 'pizza') dispatch(storePizzas(data));
       setEntries(data);
       setSortedEntries(data);
     }
@@ -90,7 +84,7 @@ export default function AdminManage() {
 
       {status === 'error' && <h1>Error</h1>}
 
-      {status === 'loading' && <h1>Loading</h1>}
+      {status === 'loading' && <h1>Loading..</h1>}
       {/* Adding Loading Spinner? */}
       {/* {data && JSON.stringify(data)} */}
       <br />

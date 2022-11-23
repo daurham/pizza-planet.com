@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { setUser } from '../redux/slices/usersSlice';
+import { logInUser } from '../redux/slices/userSlice';
 import { useAppDispatch } from '../redux/hooks';
 // import { Redirect } from 'react-router-dom';
 
@@ -56,7 +56,7 @@ export default function Login({ isAdmin, isNew }: Props) {
       //   // TODO: Remove after I get the user login finished
       //   role: data.role,
       // }));
-      dispatch(setUser(data));
+      dispatch(logInUser(data));
       // Redirect
       if (data.role === 'customer') navigate('/');
       if (data.role === 'owner') navigate('/admin/manage');
@@ -77,7 +77,7 @@ export default function Login({ isAdmin, isNew }: Props) {
           const { data } = await axios.get(`/user?email=${userEmail}`);
           console.log('Ensure that this is USER obj:', data);
           // Set state
-          dispatch(setUser(data));
+          dispatch(logInUser(data));
           // redirect home if not admin, else manager
           if (data.role === 'customer') navigate('/');
           if (data.role === 'owner') navigate('/admin/manage');

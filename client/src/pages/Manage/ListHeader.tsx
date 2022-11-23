@@ -8,6 +8,9 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { switchList } from '../../redux/slices/siteSlice';
+import { capFirstChar } from '../../utils';
+import AddPizzaForm from './Forms/AddPizzaForm';
+import AddToppingForm from './Forms/AddToppingForm';
 
 type Props = {
   sortFn: (arg0: 'popular' | 'price' | 'alphabet', arg1?: boolean | undefined) => void;
@@ -21,16 +24,22 @@ export default function ListHeader({ sortFn, filterFn, refetch }: Props) {
   const dispatch = useAppDispatch();
 
   const type = useAppSelector((state) => state.site.listType);
-  const role = useAppSelector((state) => state.users.user!.role);
+
+  const [searchQuery, setSearchQuery] = useState('');
+  const [reverseData, setReverseData] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const handleShow = () => setShowModal(true);
+  const handleClose = () => setShowModal(false);
+  const role = useAppSelector((state) => state.user.user!.role);
 
   const switchListType = () => {
     dispatch(switchList());
+    setShowModal(false);
     refetch();
   }; // TODO:
   // IF owner, include the switchListType function
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [reverseData, setReverseData] = useState(false);
+  const getOtherType = () => (type === 'pizza' ? 'topping' : 'pizza');
 
   console.log('reversed Val', reverseData);
   // Add useEffect to sort on searcchQuery, reverseData change
@@ -40,14 +49,12 @@ export default function ListHeader({ sortFn, filterFn, refetch }: Props) {
 
   return (
     <div>
-      <Navbar bg="light" expand="lg">
+      <Navbar variant="dark" bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand>{type === 'pizza' ? 'Pizzas' : 'Toppings'}</Navbar.Brand>
-          <Nav.Link>{`Add ${type === 'pizza' ? 'Pizza' : 'Topping'}`}</Nav.Link>
+          <Navbar.Brand>{`${capFirstChar(type)}s`}</Navbar.Brand>
+          <Nav.Link onClick={handleShow}>{`Add ${capFirstChar(type)}`}</Nav.Link>
           {role === 'owner' && (
-            <Nav.Link onClick={switchListType}>
-              {type === 'topping' ? 'Pizzas' : 'Toppings'}
-            </Nav.Link>
+            <Nav.Link onClick={switchListType}>{`${capFirstChar(getOtherType())}s`}</Nav.Link>
           )}
           {/* <Navbar.Toggle aria-controls="navbarScroll">Filter</Navbar.Toggle> */}
           <NavDropdown title="Filter" id="navbarScrollingDropdown">
@@ -82,6 +89,13 @@ export default function ListHeader({ sortFn, filterFn, refetch }: Props) {
           </Form>
         </Container>
       </Navbar>
+
+      {type === 'pizza' && (
+        <AddPizzaForm showModal={showModal} refetch={refetch} handleClose={handleClose} />
+      )}
+      {type === 'topping' && (
+        <AddToppingForm showModal={showModal} refetch={refetch} handleClose={handleClose} />
+      )}
     </div>
   );
 }
