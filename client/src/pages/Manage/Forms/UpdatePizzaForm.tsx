@@ -4,8 +4,12 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } fr
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
 import { useAppSelector } from '../../../redux/hooks';
-import { joinToppings, splitToppings, toppingsAreUniqueFromPizzaList } from '../../../utils';
+import { capFirstChar, parseToppings, toppingsAreUniqueFromPizzaList } from '../../../utils';
 import { ToppingType } from '../../../redux/slices/toppingsSlice';
 
 type Props = {
@@ -38,8 +42,9 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
   const [price, setPrice] = useState(entry.price);
   const [notes, setNotes] = useState(entry.notes);
   const [instructions, setInstructions] = useState(entry.instructions);
-  const [img, setImg] = useState(entry.img); // TODO: Upgrade to "upload img"
-  const [toppingsAdded, setToppingsAdded] = useState<string[]>([]);
+  const [img, setImg] = useState(entry.img);
+  console.log('entry', entry);
+  const [toppingsAdded, setToppingsAdded] = useState<string[]>(parseToppings(entry.toppings));
 
   const { data, status } = useQuery('toppings', fetchToppings);
   const { pizzas } = useAppSelector((state) => state.pizzas);
@@ -47,25 +52,29 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     // Case 1 : The user checks the box
-    if (checked) setToppingsAdded([...toppingsAdded, value]);
+    if (checked) setToppingsAdded([...toppingsAdded, value].sort());
     // Case 2  : The user unchecks the box
-    if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)]);
+    if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)].sort());
   };
 
   const deleteEntry = async () => {
-    await axios.delete('/pizza', {
-      data: {
-        name: entry.name,
-      },
-    });
-    refetch();
-    handleClose();
+    try {
+      await axios.delete('/pizza', {
+        data: {
+          name: entry.name,
+        },
+      });
+      refetch();
+      handleClose();
+    } catch (error) {
+      alert(`Error Updating ${entry.name}`);
+    }
   };
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // IF topping not unique
-    if (!toppingsAreUniqueFromPizzaList(toppingsAdded, pizzas)) {
+    if (!toppingsAreUniqueFromPizzaList(toppingsAdded, pizzas, entry.name)) {
       alert('Topping combo already exists.');
       return;
     }
@@ -74,19 +83,18 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
         name: entry.name,
         popularity,
         calories,
-        price,
+        price: `$${price}`,
         notes,
         instructions,
         img,
-        toppings: joinToppings(toppingsAdded),
+        toppings: JSON.stringify(toppingsAdded),
       });
       if (success) {
-        setToppingsAdded(() => []);
         refetch();
         handleClose();
       }
     } catch (error) {
-      alert('Error Updating');
+      alert(`Error Updating ${entry.name}`);
     }
   };
 
@@ -97,7 +105,241 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
       </Modal.Header>
       <Modal.Body>
         <Form id="update-pizza-form" onSubmit={(e) => submitForm(e)}>
-          <input
+          <Row className="align-items-center">
+            <Form.Label htmlFor="topping-input">Toppings:</Form.Label>
+            <Col sm={3} className="my-1">
+              <Form.Group id="topping-input">
+                {status === 'loading' && <p>Loading..</p>}
+                {status === 'error' && <p>Error getting toppings</p>}
+                {status === 'success' &&
+                  data.slice(0, Math.round(data.length / 2)).map((t: ToppingType) => (
+                    <div key={t.id} className="mb-1">
+                      <Form.Check
+                        label={t.name}
+                        value={t.name}
+                        type="checkbox"
+                        onChange={(e) => handleChange(e)}
+                        inline
+                      />
+                    </div>
+                  ))}
+              </Form.Group>
+            </Col>
+            <Col sm={3} className="my-1">
+              <Form.Group id="topping-input">
+                {status === 'loading' && <p>Loading..</p>}
+                {status === 'error' && <p>Error getting toppings</p>}
+                {status === 'success' &&
+                  data.slice(Math.round(data.length / 2), data.length).map((t: ToppingType) => (
+                    <div key={t.id} className="mb-1">
+                      <Form.Check
+                        label={t.name}
+                        value={t.name}
+                        type="checkbox"
+                        onChange={(e) => handleChange(e)}
+                        inline
+                      />
+                    </div>
+                  ))}
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Label htmlFor="popularity-input">Popularity Rating:</Form.Label>
+              <Form.Select
+                className="mb-3"
+                size="sm"
+                id="popularity-input"
+                defaultValue={0}
+                onChange={(e) => setPopularity(Number(e.target.value))}
+              >
+                {[0, 1, 2, 3, 4, 5].map((n, i) => (
+                  <option key={i} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col>
+              <InputGroup id="price-input" className="mb-3">
+                <InputGroup.Text>$</InputGroup.Text>
+                <FloatingLabel controlId="floatingPrice" label="Price">
+                  <Form.Control
+                    type="number"
+                    size="sm"
+                    // className=''
+                    placeholder="Price"
+                    step="0.01"
+                    onChange={(e) => setPrice(e.target.value)}
+                    aria-label="Amount (to the nearest dollar)"
+                    max="100"
+                    min="0"
+                    required
+                  />
+                </FloatingLabel>
+                <InputGroup.Text>.00</InputGroup.Text>
+              </InputGroup>
+            </Col>
+            <Col>
+              <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
+                <Form.Control
+                  onChange={(e) => setCalories(Number(e.target.value))}
+                  type="number"
+                  size="sm"
+                  placeholder="Calories"
+                  // pattern='{1-10000}'
+                  max="10000"
+                  min="0"
+                  required
+                />
+              </FloatingLabel>
+            </Col>
+          </Row>
+
+          <FloatingLabel controlId="floatingNotes" label="Notes">
+            <Form.Control
+              as="textarea"
+              className="mb-3"
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Leave a comment here"
+              style={{ height: '75px' }}
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId="floatingInstructions" label="Instructions">
+            <Form.Control
+              as="textarea"
+              className="mb-3"
+              onChange={(e) => setInstructions(e.target.value)}
+              placeholder="Leave baking instructions here"
+              style={{ height: '150px' }}
+            />
+          </FloatingLabel>
+
+          <Row className="g-2">
+            <Col md>
+              <FloatingLabel controlId="floatingImgURL" label="Image URL">
+                <Form.Control
+                  size="sm"
+                  // className="mb-3"
+                  onChange={(e) => setImg(e.target.value)}
+                  type="image-url"
+                  placeholder="Image URL"
+                />
+              </FloatingLabel>
+            </Col>
+            <Col md>
+              <Form.Group controlId="formFile" className="mt-3">
+                <Form.Control
+                  disabled
+                  size="sm"
+                  placeholder="Upload Image"
+                  type="file"
+                  aria-disabled
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
+          {/*           
+          <Row className="align-items-center">
+            <Col sm={3} className="my-1">
+              <Form.Label htmlFor="topping-input">Toppings:</Form.Label>
+              <Form.Group id="topping-input">
+                {status === 'loading' && <p>Loading..</p>}
+                {status === 'error' && <p>Error getting toppings</p>}
+                {status === 'success' &&
+                  data.map((t: ToppingType) => (
+                    <div key={t.id} className="mb-1">
+                      <Form.Check
+                        label={t.name}
+                        value={t.name}
+                        type="checkbox"
+                        onChange={(e) => handleChange(e)}
+                        inline
+                      />
+                    </div>
+                  ))}
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <InputGroup id="price-input" className="mb-3">
+            <InputGroup.Text>$</InputGroup.Text>
+            <FloatingLabel controlId="floatingPrice" label="Price">
+              <Form.Control
+                type="number"
+                placeholder="Price"
+                onChange={(e) => setPrice(e.target.value)}
+                aria-label="Amount (to the nearest dollar)"
+                max="100"
+                min="0"
+                required
+              />
+            </FloatingLabel>
+            <InputGroup.Text>.00</InputGroup.Text>
+          </InputGroup>
+
+          <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
+            <Form.Control
+              onChange={(e) => setCalories(Number(e.target.value))}
+              type="number"
+              placeholder="Calories"
+              // pattern='{1-10000}'
+              max="10000"
+              min="0"
+              required
+            />
+          </FloatingLabel>
+
+          <Form.Label htmlFor="popularity-input">Popularity Rating:</Form.Label>
+          <Form.Select
+            className="mb-3"
+            id="popularity-input"
+            defaultValue={0}
+            onChange={(e) => setPopularity(Number(e.target.value))}
+          >
+            {[0, 1, 2, 3, 4, 5].map((n, i) => (
+              <option key={i} value={n}>
+                {n}
+              </option>
+            ))}
+          </Form.Select>
+
+          <FloatingLabel controlId="floatingNotes" label="Notes">
+            <Form.Control
+              as="textarea"
+              className="mb-3"
+              onChange={(e) => setNotes(e.target.value)}
+              placeholder="Leave a comment here"
+              style={{ height: '75px' }}
+            />
+          </FloatingLabel>
+          <FloatingLabel controlId="floatingInstructions" label="Instructions">
+            <Form.Control
+              as="textarea"
+              className="mb-3"
+              onChange={(e) => setInstructions(e.target.value)}
+              placeholder="Leave baking instructions here"
+              style={{ height: '150px' }}
+            />
+          </FloatingLabel>
+
+          <Row className="g-2">
+            <Col md>
+              <FloatingLabel controlId="floatingImgURL" label="Image URL">
+                <Form.Control
+                  size="sm"
+                  // className="mb-3"
+                  onChange={(e) => setImg(e.target.value)}
+                  type="image-url"
+                  placeholder="Image URL"
+                />
+              </FloatingLabel>
+            </Col>
+            <Col md> */}
+          {/* <input
             placeholder="calories"
             defaultValue={entry.calories}
             type="number"
@@ -140,22 +382,22 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
             placeholder="img URL"
             type="text"
             onChange={(e) => setImg(e.target.value)}
-          />
-          {JSON.stringify(splitToppings(entry.toppings))}
-          {status === 'loading' && <p>Loading..</p>}
+          /> */}
+          {/* {entry ? JSON.stringify(parseToppings(entry.toppings)) : null} */}
+          {/* {status === 'loading' && <p>Loading..</p>}
           {status === 'error' && <p>Error getting toppings</p>}
           {status === 'success' &&
             data.map((t: ToppingType) => (
               <div key={t.id} className="mb-3">
                 <Form.Check
-                  defaultChecked={splitToppings(entry.toppings).includes(t.name)}
+                  defaultChecked={parseToppings(entry.toppings).includes(capFirstChar(t.name))}
                   label={t.name}
                   value={t.name}
                   type="checkbox"
                   onChange={(e) => handleChange(e)}
                 />
               </div>
-            ))}
+            ))} */}
         </Form>
       </Modal.Body>
       <Modal.Footer>

@@ -8,67 +8,79 @@ export const capFirstChar = (s: string) => {
   return result;
 };
 
-export const joinToppings = (tops: string[]) => {
-  return tops.sort().join(',').toLowerCase();
+// export const joinToppings = (tops: string[]) => {
+//   return tops.sort().join(',').toLowerCase();
+// };
+export const stringifyToppings = (tops: string[]) => {
+  // return tops.sort().join(',').toLowerCase();
+  return JSON.stringify(tops);
 };
 
-export const joinAllToppingsFromToppingType = (tops: ToppingType[]) => {
-  const topArray: string[] = [];
-  tops.forEach((t) => {
-    topArray.push(t.name);
-  });
-  return topArray.sort().join(',').toLowerCase();
-};
+// export const joinAllToppingsFromToppingType = (tops: ToppingType[]) => {
+//   const topArray: string[] = [];
+//   tops.forEach((t) => {
+//     topArray.push(t.name);
+//   });
+//   return topArray.sort().join(',').toLowerCase();
+// };
+// export const splitToppings = (topString: string) => {
+//   console.log('topString:', topString);
+//   const toppingList = topString.split(',');
+//   return toppingList.map((t) => capFirstChar(t));
+// };
 
-export const splitToppings = (topString: string) => {
-  console.log('topString:', topString);
-  const toppingList = topString.split(',');
-  return toppingList.map((t) => capFirstChar(t));
+export const parseToppings = (topString: string): string[] => {
+  // console.log('topString:', topString);
+  // const toppingList = topString.split(',');
+  return JSON.parse(topString).map((t: string) => capFirstChar(t));
 };
 
 export const toppingsAreUnique = (list1: string[], list2: string[]) => {
-  let isACopy = true;
-  console.log('toppingsAreUnq1:', list1);
-  console.log('toppingsAreUnq2:', list2);
-  if (list1.length !== list2.length) console.log('');
   if (list1.length !== list2.length) return true;
+  if (list1.length === 0 && list2.length === 0) return false;
+  let isACopy = true;
   list1.forEach((top1, i) => {
     if (top1 !== list2[i]) isACopy = false;
   });
-  console.log('toppingsAreUnq 1!==2: ', String(!isACopy));
+  // console.log('toppingsAreUnq 1!==2: ', String(!isACopy));
+  // console.log('toppings Are Unq:', String(!isACopy), list1, list2);
+  // console.log('Is A Copy: ', String(isACopy));
   return !isACopy;
 };
 // [1, 2, 3]
 // [1, 5, 3]
-export const toppingsAreUniqueFromPizzaType = (list1: string, list2: string) => {
-  let isACopy = true;
-  console.log('1', list1);
-  console.log('2', list2);
-  const tList1 = splitToppings(list1);
-  const tList2 = splitToppings(list2);
-  // If ea list is a different length, its isACopy
-  if (tList1.length !== tList2.length) return true;
-  tList1.forEach((top1, i) => {
-    // If current topping isnt a found for every iteration
-    if (top1 !== tList2[i]) isACopy = false;
-  });
-  return !isACopy;
-};
 
 // AddPizza
-export const toppingsAreUniqueFromPizzaList = (list: string[], pizzaList: PizzaType[]) => {
-  if (pizzaList.length === 0 && list.length === 0) return false;
-  if (pizzaList.length === 0 || list.length === 0) return true;
-  let isACopy = true;
+export const toppingsAreUniqueFromPizzaList = (
+  list: string[],
+  pizzaList: PizzaType[],
+  currentName: string
+) => {
+  if (pizzaList.length === 0 && list.length === 0) return true;
+  // if (pizzaList.length === 0 || list.length === 0) return true;
+  let copyFound = false;
   pizzaList.forEach((pizza) => {
-    console.log('list', list);
-    console.log('pizzaList', pizzaList);
-    const pizzaToppings = splitToppings(pizza.toppings);
-    console.log('pizzaListToppings using toppingsAreUniq', pizzaToppings);
-    if (toppingsAreUnique(list, pizzaToppings)) isACopy = false;
+    // console.log('list', list);
+    // console.log('pizzaList', pizzaList);
+    const pizzaToppings = parseToppings(pizza.toppings);
+    if (currentName !== pizza.name) {
+      // console.log('comparing', pizza.name, list, pizzaToppings);
+      if (!toppingsAreUnique(list, pizzaToppings)) {
+        // console.log('Topings ARE  unique:', list, pizzaToppings);
+        copyFound = true;
+        // console.log('Toppings are unique appaently:', String(copyFound));
+      }
+    }
   });
-  console.log('returning:', String(!isACopy));
-  return !isACopy;
+  // console.log(
+  //   'Is a copy =',
+  //   String(copyFound),
+  //   'Toppings Are Unique:',
+  //   String(!copyFound),
+  //   list,
+  //   pizzaList
+  // );
+  return !copyFound;
 };
 
 export const toppingIsUniqueFromToppingList = (topping: string, toppingList: ToppingType[]) => {

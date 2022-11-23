@@ -37,6 +37,7 @@ export const postTopping = async (
 };
 
 export const deleteTopping = async (name: string, res: Response) => {
+  console.log('deleting:', name);
   try {
     const success = await prisma.topping.delete({
       where: {

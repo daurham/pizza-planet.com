@@ -28,8 +28,9 @@ export default function List({ entries, type, refetch }: Props) {
   // const { listType } = useAppSelector((state) => state.site);
   // console.log('entries', entries);
   if (!entries) return <p>Loading..</p>;
+  // console.log('TYPE:', type);
   return (
-    <div>
+    <div className="list">
       {/* {type} */}
       {/* {JSON.stringify(entries)} */}
       {type === 'pizza' &&

@@ -3,6 +3,10 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
 import { capFirstChar, toppingIsUniqueFromToppingList } from '../../../utils';
 import { useAppSelector } from '../../../redux/hooks';
@@ -27,13 +31,13 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!toppingIsUniqueFromToppingList(capFirstChar(name), toppings)) {
-      alert(`${name} already exists`);
+      alert(`Error: ${name} already exists.`);
     }
     try {
       const success = await axios.post('/topping', {
         name: capFirstChar(name),
-        price,
-        pricingMeasurement: pricingMeasurement.toLocaleLowerCase(),
+        price: `$${price}.00`,
+        pricingMeasurement,
         img,
       });
       if (success) {
@@ -41,7 +45,7 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         handleClose();
       }
     } catch (error) {
-      alert(`${name} already exists`);
+      alert(`Error adding ${name}.`);
     }
   };
 
@@ -51,41 +55,82 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         <Modal.Title>Add A New Topping</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        {/* <form> */}
         <Form id="add-topping-form" onSubmit={(e) => submitForm(e)}>
-          <input placeholder="name" type="text" onChange={(e) => setName(e.target.value)} />
-          <input
-            defaultValue="$0.00"
-            placeholder="$0.00"
-            type="text"
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          {/* <input
-            placeholder="pricingMeasurement"
-            type="text"
-            onChange={(e) => setPricingMeasurement(e.target.value)}
-          /> */}
-          <select defaultValue="lb" onChange={(e) => setPricingMeasurement(e.target.value)}>
-            <option value="lb">lb</option>
-            <option value="oz">oz</option>
-            <option value="gram">gram</option>
-          </select>
-          <input placeholder="img URL" type="text" onChange={(e) => setImg(e.target.value)} />
-          {/* <Button type="submit">Submit</Button> */}
+          <FloatingLabel controlId="floatingToppingName" label="Topping Name">
+            <Form.Control
+              onChange={(e) => setName(e.target.value)}
+              type="ToppingName"
+              placeholder="ToppingName"
+              className="mb-3"
+            />
+          </FloatingLabel>
+
+          <Row className="g-2">
+            <Col md>
+              <InputGroup id="price-input" className="mb-3">
+                <InputGroup.Text>$</InputGroup.Text>
+                <FloatingLabel controlId="floatingPrice" label="Price">
+                  <Form.Control
+                    type="number"
+                    placeholder="Price"
+                    onChange={(e) => setPrice(e.target.value)}
+                    aria-label="Amount (to the nearest dollar)"
+                  />
+                </FloatingLabel>
+                <InputGroup.Text>.00</InputGroup.Text>
+              </InputGroup>
+            </Col>
+            <Col md>
+              {/* <Form.Label htmlFor="PricingMeasurement-input">Pricing Measurement:</Form.Label> */}
+              <FloatingLabel controlId="floatingPricingMeasurement" label="Princing Measurement">
+                <Form.Select
+                  className="mb-3"
+                  id="PricingMeasurement-input"
+                  placeholder="Pricing Measurement"
+                  defaultValue={0}
+                  onChange={(e) => setPricingMeasurement(e.target.value)}
+                >
+                  {['lb', 'oz', 'g'].map((n, i) => (
+                    <option key={i} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </Form.Select>
+              </FloatingLabel>
+            </Col>
+          </Row>
+
+          <Row className="g-2">
+            <Col md>
+              <FloatingLabel controlId="floatingImgURL" label="Image URL">
+                <Form.Control
+                  size="sm"
+                  // className="mb-3"
+                  onChange={(e) => setImg(e.target.value)}
+                  type="image-url"
+                  placeholder="Image URL"
+                />
+              </FloatingLabel>
+            </Col>
+            <Col md>
+              <Form.Group controlId="formFile" className="mt-3">
+                <Form.Control
+                  disabled
+                  size="sm"
+                  placeholder="Upload Image"
+                  type="file"
+                  aria-disabled
+                />
+              </Form.Group>
+            </Col>
+          </Row>
         </Form>
-        {/* </form> */}
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        {/* <Button type="submit" variant="primary" onClick={(e) => submitForm(e)}> */}
-        <Button
-          form="add-topping-form"
-          type="submit"
-          variant="primary"
-          // onClick={(e) => submitForm(e)}
-        >
+        <Button form="add-topping-form" type="submit" variant="primary">
           Submit
         </Button>
       </Modal.Footer>

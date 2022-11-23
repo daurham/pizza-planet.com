@@ -18,7 +18,36 @@ a {
   resize: none;
 }
 
+.list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: space-evenly;    
+  align-items: center;  
+}
+
 .card-img .cards-img {
   object-fit: cover;
   height: 200px;
 }
+
+.me-auto {
+  max-height: 150px;
+}
+
+@media (max-width: 767px) {
+  .navbar-custom .navbar-nav .open .dropdown-menu > li > a {
+    color: #DBFAFF
+    }
+   .navbar-custom .navbar-nav .open .dropdown-menu > li > a:hover,
+   .navbar-custom .navbar-nav .open .dropdown-menu > li > a:focus  {
+      color: #40F99B
+    }
+    .navbar-custom.navbar-fixed-top .navbar-collapse,
+    .navbar-custom.navbar-fixed-bottom .navbar-collapse {
+      max-height: auto;
+      height:auto; /* Add this */
+    }
+  }
+  

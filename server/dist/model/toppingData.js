@@ -46,6 +46,7 @@ const postTopping = (name, price, pricingMeasurement, img, res) => __awaiter(voi
 });
 exports.postTopping = postTopping;
 const deleteTopping = (name, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('deleting:', name);
     try {
         const success = yield database_1.default.topping.delete({
             where: {

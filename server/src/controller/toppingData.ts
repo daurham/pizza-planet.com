@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import  { getTopping, postTopping, deleteTopping, updateTopping } from '../model'
+import { getTopping, postTopping, deleteTopping, updateTopping } from '../model';
 
 export const getToppingData = (req: Request, res: Response) => {
   getTopping(res);

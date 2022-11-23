@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 import List from './List';
 import ListHeader from './ListHeader';
-import { PizzaType, storePizzas } from '../../redux/slices/pizzasSlice';
-import { ToppingType } from '../../redux/slices/toppingsSlice';
+import { storePizzas } from '../../redux/slices/pizzasSlice';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { EntriesT } from '../../../../@types';
 
-type EntriesT = (PizzaType[] | ToppingType[]) | (PizzaType | ToppingType)[];
 const fetchEntries = async ({ queryKey }: any) => {
   const { type } = queryKey[1];
   const res = await fetch(type ? `/${type}` : '/pizza'); // TODO: Consider using axios to remain consistent
@@ -14,69 +13,72 @@ const fetchEntries = async ({ queryKey }: any) => {
 };
 
 export default function AdminManage() {
-  // const { user } = useAppSelector(state => state)
   const dispatch = useAppDispatch();
   const type = useAppSelector((state) => state.site.listType);
   const { data, status, refetch } = useQuery({
     queryKey: ['entryData', { type }],
     queryFn: fetchEntries,
-    // staleTime: Infinity,
   });
   const [entries, setEntries] = useState<EntriesT>(data);
   const [sortedEntries, setSortedEntries] = useState<EntriesT>(data);
-  if (data) console.log('fetched', type, ' data:', data);
+  // if (data) console.log('fetched', type, ' data:', data);
 
-  const sortEntries = (
-    method: 'popular' | 'price' | 'alphabet' | 'all',
-    reverse?: boolean | undefined
-  ) => {
+  const sortEntries = (method: 'popular' | 'price' | 'alphabet', reverse?: boolean) => {
     if (method === 'popular') {
-      const e = entries.sort((a, b) => {
-        return 1;
-      }); // TODO
-      if (reverse) setSortedEntries(e.reverse());
-      if (!reverse) setSortedEntries(() => e);
+      const e = [...entries];
+      setEntries(() =>
+        e.sort((a, b) => {
+          /* @ts-ignore: Unreachable code error */
+          if (reverse) return a.popularity - b.popularity;
+          /* @ts-ignore: Unreachable code error */
+          if (!reverse) return b.popularity - a.popularity;
+          return 1;
+        })
+      );
     }
     if (method === 'price') {
-      const e = entries.sort((a, b) => {
-        return 1;
-      }); // TODO
-      if (reverse) setSortedEntries(e.reverse());
-      if (!reverse) setSortedEntries(() => e);
+      const e = [...entries];
+      setEntries(() =>
+        e.sort((a, b) => {
+          if (!reverse) return a.price.toLowerCase().localeCompare(b.price.toLowerCase());
+          if (reverse) return b.price.toLowerCase().localeCompare(a.price.toLowerCase());
+          return 1;
+        })
+      );
     }
     if (method === 'alphabet') {
-      const e = entries.sort((a, b) => {
-        return 1;
-      }); // TODO
-      if (reverse) setSortedEntries(e.reverse());
-      if (!reverse) setSortedEntries(() => e);
-    }
-    if (method === 'all') {
-      if (reverse) setSortedEntries([...entries.reverse()]);
-      if (!reverse) setSortedEntries([...entries]);
+      const e = [...entries];
+      setEntries(() =>
+        e.sort((a, b) => {
+          if (!reverse) return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+          if (reverse) return b.name.toLowerCase().localeCompare(a.name.toLowerCase());
+          return 1;
+        })
+      );
     }
   };
 
   const filterEntries = (query: string) => {
-    if (sortedEntries) {
-      const result = sortedEntries.filter((e) => {
-        if (e.name.includes(query)) return true;
+    if (entries) {
+      const result = entries.filter((e) => {
+        if (e.name.toLowerCase().includes(query.toLowerCase())) return true;
         return false;
       });
       setSortedEntries([...result]);
     }
   };
+
   useEffect(() => {
-    // console.log('data changed');
     if (data) {
-      console.log('data updating');
       if (type === 'pizza') dispatch(storePizzas(data));
       setEntries(data);
       setSortedEntries(data);
     }
   }, [data]);
 
-  // TODO On render, populate the state resultwith entries // use reactQuery OR useEffect
+  useEffect(() => {
+    setSortedEntries(entries);
+  }, [entries]);
 
   return (
     <div>
@@ -85,11 +87,13 @@ export default function AdminManage() {
       {status === 'error' && <h1>Error</h1>}
 
       {status === 'loading' && <h1>Loading..</h1>}
-      {/* Adding Loading Spinner? */}
-      {/* {data && JSON.stringify(data)} */}
       <br />
-      {/* {sortedEntries && JSON.stringify(sortedEntries)} */}
-      <ListHeader sortFn={sortEntries} filterFn={filterEntries} refetch={refetch} />
+      <ListHeader
+        sortFn={sortEntries}
+        filterFn={filterEntries}
+        refetch={refetch}
+        dumpEntries={setSortedEntries}
+      />
 
       {/* @ts-ignore: Unreachable code error */}
       {status === 'success' && <List entries={sortedEntries} type={type} refetch={refetch} />}

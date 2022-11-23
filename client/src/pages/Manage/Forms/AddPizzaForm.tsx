@@ -3,20 +3,15 @@ import React, { useState } from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters, useQuery } from 'react-query';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Modal from 'react-bootstrap/Modal';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
 import { useAppSelector } from '../../../redux/hooks';
 import { ToppingType } from '../../../redux/slices/toppingsSlice';
-import {
-  capFirstChar,
-  joinToppings,
-  pizzaNameIsValid,
-  toppingsAreUniqueFromPizzaList,
-} from '../../../utils';
+import { capFirstChar, pizzaNameIsValid, toppingsAreUniqueFromPizzaList } from '../../../utils';
 
 type Props = {
   handleClose: () => void;
@@ -38,32 +33,35 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
   const [price, setPrice] = useState('');
   const [notes, setNotes] = useState('');
   const [instructions, setInstructions] = useState('');
-  const [img, setImg] = useState(''); // TODO: Upgrade to "upload img"
+  const [img, setImg] = useState('');
   const [toppingsAdded, setToppingsAdded] = useState<string[]>([]);
-  // const [toppingString, setToppingString] = useState('');
 
   const { data, status } = useQuery('toppings', fetchToppings);
-
   const { pizzas } = useAppSelector((state) => state.pizzas);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     // Case 1 : The user checks the box
-    if (checked) setToppingsAdded([...toppingsAdded, value]);
+    if (checked) setToppingsAdded([...toppingsAdded, value].sort());
     // Case 2  : The user unchecks the box
-    if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)]);
+    if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)].sort());
   };
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Check topping and name validity
-    if (!toppingsAreUniqueFromPizzaList(toppingsAdded, pizzas)) {
+    // IF topping is NOT unique
+    if (!toppingsAreUniqueFromPizzaList(toppingsAdded, pizzas, '')) {
       // console.log('pizzas:', pizzas);
       alert('Error: Topping combo already exists.');
       return;
     }
+    // IF name is NOT unique
+    if (name === '') {
+      alert('Error: Invalid pizza name.');
+      return;
+    }
     if (!pizzaNameIsValid(capFirstChar(name), pizzas)) {
-      alert('Error: Pizza name already exists.');
+      alert(`Error: ${name} already exists.`);
       return;
     }
     try {
@@ -71,19 +69,18 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
         name: capFirstChar(name),
         popularity,
         calories,
-        price,
+        price: `$${price}`,
         notes,
         instructions,
         img,
-        toppings: joinToppings(toppingsAdded) || '',
+        toppings: JSON.stringify(toppingsAdded),
       });
       if (success) {
         refetch();
-        setToppingsAdded(() => []);
         handleClose();
       }
     } catch (error) {
-      alert(`Error Adding ${name}`);
+      alert(`Error adding ${name}.`);
     }
   };
 
@@ -104,13 +101,13 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
           </FloatingLabel>
 
           <Row className="align-items-center">
+            <Form.Label htmlFor="topping-input">Toppings:</Form.Label>
             <Col sm={3} className="my-1">
-              <Form.Label htmlFor="topping-input">Toppings:</Form.Label>
               <Form.Group id="topping-input">
                 {status === 'loading' && <p>Loading..</p>}
                 {status === 'error' && <p>Error getting toppings</p>}
                 {status === 'success' &&
-                  data.map((t: ToppingType) => (
+                  data.slice(0, Math.round(data.length / 2)).map((t: ToppingType) => (
                     <div key={t.id} className="mb-1">
                       <Form.Check
                         label={t.name}
@@ -123,42 +120,78 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
                   ))}
               </Form.Group>
             </Col>
+            <Col sm={3} className="my-1">
+              <Form.Group id="topping-input">
+                {status === 'loading' && <p>Loading..</p>}
+                {status === 'error' && <p>Error getting toppings</p>}
+                {status === 'success' &&
+                  data.slice(Math.round(data.length / 2), data.length).map((t: ToppingType) => (
+                    <div key={t.id} className="mb-1">
+                      <Form.Check
+                        label={t.name}
+                        value={t.name}
+                        type="checkbox"
+                        onChange={(e) => handleChange(e)}
+                        inline
+                      />
+                    </div>
+                  ))}
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Label htmlFor="popularity-input">Popularity Rating:</Form.Label>
+              <Form.Select
+                className="mb-3"
+                size="sm"
+                id="popularity-input"
+                defaultValue={0}
+                onChange={(e) => setPopularity(Number(e.target.value))}
+              >
+                {[0, 1, 2, 3, 4, 5].map((n, i) => (
+                  <option key={i} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </Form.Select>
+            </Col>
           </Row>
 
-          <InputGroup id="price-input" className="mb-3">
-            <InputGroup.Text>$</InputGroup.Text>
-            <FloatingLabel controlId="floatingPrice" label="Price">
-              <Form.Control
-                type="number"
-                placeholder="Price"
-                onChange={(e) => setPrice(e.target.value)}
-                aria-label="Amount (to the nearest dollar)"
-              />
-            </FloatingLabel>
-            <InputGroup.Text>.00</InputGroup.Text>
-          </InputGroup>
-
-          <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
-            <Form.Control
-              onChange={(e) => setCalories(Number(e.target.value))}
-              type="number"
-              placeholder="Calories"
-            />
-          </FloatingLabel>
-
-          <Form.Label htmlFor="popularity-input">Popularity Rating:</Form.Label>
-          <Form.Select
-            className="mb-3"
-            id="popularity-input"
-            defaultValue={0}
-            onChange={(e) => setPopularity(Number(e.target.value))}
-          >
-            {[0, 1, 2, 3, 4, 5].map((n, i) => (
-              <option key={i} value={n}>
-                {n}
-              </option>
-            ))}
-          </Form.Select>
+          <Row>
+            <Col>
+              <InputGroup id="price-input" className="mb-3">
+                <InputGroup.Text>$</InputGroup.Text>
+                <FloatingLabel controlId="floatingPrice" label="Price">
+                  <Form.Control
+                    type="number"
+                    size="sm"
+                    step="0.01"
+                    // className=''
+                    placeholder="Price"
+                    onChange={(e) => setPrice(e.target.value)}
+                    aria-label="Amount (to the nearest dollar)"
+                    max="100"
+                    min="0"
+                    required
+                  />
+                </FloatingLabel>
+                <InputGroup.Text>.00</InputGroup.Text>
+              </InputGroup>
+            </Col>
+            <Col>
+              <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
+                <Form.Control
+                  onChange={(e) => setCalories(Number(e.target.value))}
+                  type="number"
+                  size="sm"
+                  placeholder="Calories"
+                  // pattern='{1-10000}'
+                  max="10000"
+                  min="0"
+                  required
+                />
+              </FloatingLabel>
+            </Col>
+          </Row>
 
           <FloatingLabel controlId="floatingNotes" label="Notes">
             <Form.Control
@@ -192,8 +225,6 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
               </FloatingLabel>
             </Col>
             <Col md>
-              {/* <Form.Label>Default file input example</Form.Label> */}
-              {/* <FloatingLabel controlId="floatingUploadImage" label="Upload Image"> */}
               <Form.Group controlId="formFile" className="mt-3">
                 <Form.Control
                   disabled
@@ -203,7 +234,6 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
                   aria-disabled
                 />
               </Form.Group>
-              {/* </FloatingLabel> */}
             </Col>
           </Row>
         </Form>
@@ -213,7 +243,6 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
           Close
         </Button>
         <Button type="submit" variant="primary" form="add-pizza-form">
-          {/* <Button type="submit" variant="primary" onClick={(e) => submitForm(e)}> */}
           Submit
         </Button>
       </Modal.Footer>

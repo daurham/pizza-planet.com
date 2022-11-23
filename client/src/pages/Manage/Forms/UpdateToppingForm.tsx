@@ -4,8 +4,12 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { capFirstChar, toppingIsUniqueFromToppingList } from '../../../utils';
-import { useAppSelector } from '../../../redux/hooks';
+// import { capFirstChar, toppingIsUniqueFromToppingList } from '../../../utils';
+// import { useAppSelector } from '../../../redux/hooks';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 type Props = {
   entry: {
@@ -26,27 +30,28 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
   const [pricingMeasurement, setPricingMeasurement] = useState(entry.pricingMeasurement);
   const [img, setImg] = useState(entry.img); // TODO: Upgrade to "upload img"
 
-  const { toppings } = useAppSelector((state) => state.toppings);
+  // const { toppings } = useAppSelector((state) => state.toppings);
 
   const deleteEntry = async () => {
-    await axios.delete('/pizza', {
-      data: {
-        name: entry.name,
-      },
-    });
-    refetch();
-    handleClose();
+    try {
+      await axios.delete('/topping', {
+        data: {
+          name: entry.name,
+        },
+      });
+      refetch();
+      handleClose();
+    } catch (error) {
+      alert(`Error deleting ${entry.name}`);
+    }
   };
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (toppingIsUniqueFromToppingList(capFirstChar(entry.name), toppings)) {
-      alert(`Error: ${entry.name} already exists`);
-    }
     try {
       const success = await axios.patch('/topping', {
         name: entry.name,
-        price,
+        price: `$${price}.00`,
         pricingMeasurement,
         img,
       });
@@ -55,9 +60,10 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
         handleClose();
       }
     } catch (error) {
-      alert(`Error: ${entry.name} already exists`);
+      alert(`Error updating ${entry.name}`);
     }
   };
+
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -65,26 +71,65 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
       </Modal.Header>
       <Modal.Body>
         <Form id="update-topping-form" onSubmit={(e) => submitForm(e)}>
-          <input
-            defaultValue={entry.price}
-            placeholder="price"
-            type="text"
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          <select
-            defaultValue={entry.pricingMeasurement}
-            onChange={(e) => setPricingMeasurement(e.target.value)}
-          >
-            <option value="lb">lb</option>
-            <option value="oz">oz</option>
-            <option value="gram">gram</option>
-          </select>
-          <input
-            defaultValue={entry.img}
-            placeholder="img URL"
-            type="text"
-            onChange={(e) => setImg(e.target.value)}
-          />
+          <Row className="g-2">
+            <Col md>
+              <InputGroup id="price-input" className="mb-3">
+                <InputGroup.Text>$</InputGroup.Text>
+                <FloatingLabel controlId="floatingPrice" label="Price">
+                  <Form.Control
+                    type="number"
+                    placeholder="Price"
+                    onChange={(e) => setPrice(e.target.value)}
+                    aria-label="Amount (to the nearest dollar)"
+                  />
+                </FloatingLabel>
+                <InputGroup.Text>.00</InputGroup.Text>
+              </InputGroup>
+            </Col>
+            <Col md>
+              <FloatingLabel controlId="floatingPricingMeasurement" label="Princing Measurement">
+                <Form.Select
+                  className="mb-3"
+                  id="PricingMeasurement-input"
+                  placeholder="Pricing Measurement"
+                  defaultValue={0}
+                  onChange={(e) => setPricingMeasurement(e.target.value)}
+                >
+                  {['lb', 'oz', 'g'].map((n, i) => (
+                    <option key={i} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </Form.Select>
+              </FloatingLabel>
+            </Col>
+          </Row>
+
+          <Row className="g-2">
+            <Col md>
+              <FloatingLabel controlId="floatingImgURL" label="Image URL">
+                <Form.Control
+                  size="sm"
+                  // className="mb-3"
+                  onChange={(e) => setImg(e.target.value)}
+                  type="image-url"
+                  placeholder="Image URL"
+                />
+              </FloatingLabel>
+            </Col>
+            <Col md>
+              <Form.Group controlId="formFile" className="mt-3">
+                <Form.Control
+                  disabled
+                  // size="sm"
+                  placeholder="Upload Image"
+                  type="file"
+                  aria-disabled
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+
         </Form>
       </Modal.Body>
       <Modal.Footer>
