@@ -8,9 +8,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { useAppSelector } from '../../../redux/hooks';
-import { capFirstChar, parseToppings, toppingsAreUniqueFromPizzaList } from '../../../utils';
-import { ToppingType } from '../../../redux/slices/toppingsSlice';
+import { useAppSelector } from '../../redux/hooks';
+import { convertPrice, parseToppings, toppingsAreUniqueFromPizzaList } from '../../utils';
+import { ToppingType } from '../../redux/slices/toppingsSlice';
 
 type Props = {
   entry: {
@@ -43,7 +43,6 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
   const [notes, setNotes] = useState(entry.notes);
   const [instructions, setInstructions] = useState(entry.instructions);
   const [img, setImg] = useState(entry.img);
-  console.log('entry', entry);
   const [toppingsAdded, setToppingsAdded] = useState<string[]>(parseToppings(entry.toppings));
 
   const { data, status } = useQuery('toppings', fetchToppings);
@@ -83,7 +82,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
         name: entry.name,
         popularity,
         calories,
-        price: `$${price}`,
+        price: convertPrice(price),
         notes,
         instructions,
         img,
@@ -117,6 +116,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                       <Form.Check
                         label={t.name}
                         value={t.name}
+                        defaultChecked={parseToppings(entry.toppings).includes(t.name)}
                         type="checkbox"
                         onChange={(e) => handleChange(e)}
                         inline
@@ -135,6 +135,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                       <Form.Check
                         label={t.name}
                         value={t.name}
+                        defaultChecked={parseToppings(entry.toppings).includes(t.name)}
                         type="checkbox"
                         onChange={(e) => handleChange(e)}
                         inline
@@ -149,7 +150,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                 className="mb-3"
                 size="sm"
                 id="popularity-input"
-                defaultValue={0}
+                defaultValue={entry.popularity}
                 onChange={(e) => setPopularity(Number(e.target.value))}
               >
                 {[0, 1, 2, 3, 4, 5].map((n, i) => (
@@ -167,29 +168,32 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                 <InputGroup.Text>$</InputGroup.Text>
                 <FloatingLabel controlId="floatingPrice" label="Price">
                   <Form.Control
-                    type="number"
-                    size="sm"
-                    // className=''
+                    defaultValue={entry.price.slice(1)}
+                    type="text"
                     placeholder="Price"
-                    step="0.01"
-                    onChange={(e) => setPrice(e.target.value)}
-                    aria-label="Amount (to the nearest dollar)"
+                    pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    required
                     max="100"
                     min="0"
-                    required
+                    onChange={(e) => {
+                      const re = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        setPrice(e.target.value);
+                      }
+                    }}
+                    aria-label="Amount (to the nearest dollar)"
                   />
                 </FloatingLabel>
-                <InputGroup.Text>.00</InputGroup.Text>
               </InputGroup>
             </Col>
-            <Col>
+            <Col md>
               <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
                 <Form.Control
                   onChange={(e) => setCalories(Number(e.target.value))}
                   type="number"
                   size="sm"
                   placeholder="Calories"
-                  // pattern='{1-10000}'
+                  defaultValue={entry.calories}
                   max="10000"
                   min="0"
                   required
@@ -203,6 +207,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
               as="textarea"
               className="mb-3"
               onChange={(e) => setNotes(e.target.value)}
+              defaultValue={entry.notes}
               placeholder="Leave a comment here"
               style={{ height: '75px' }}
             />
@@ -213,6 +218,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
               className="mb-3"
               onChange={(e) => setInstructions(e.target.value)}
               placeholder="Leave baking instructions here"
+              defaultValue={entry.instructions}
               style={{ height: '150px' }}
             />
           </FloatingLabel>
@@ -222,6 +228,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
               <FloatingLabel controlId="floatingImgURL" label="Image URL">
                 <Form.Control
                   size="sm"
+                  defaultValue={entry.img}
                   // className="mb-3"
                   onChange={(e) => setImg(e.target.value)}
                   type="image-url"

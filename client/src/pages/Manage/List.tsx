@@ -2,8 +2,8 @@ import React from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import { ToppingType } from '../../redux/slices/toppingsSlice';
 import { PizzaType } from '../../redux/slices/pizzasSlice';
-import PizzaEntry from './Entry/PizzaEntry';
-import ToppingEntry from './Entry/ToppingEntry';
+import PizzaEntry from '../Entry/PizzaEntry';
+import ToppingEntry from '../Entry/ToppingEntry';
 // import { useAppSelector } from '../../redux/hooks';
 
 interface ToppingProps {

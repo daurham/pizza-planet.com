@@ -2,13 +2,13 @@ import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 
 export default function HomeCarousel() {
+  // TODO: Pass pizzas into here so I can show off the entries.
   return (
     <Carousel fade>
       <Carousel.Item>
         <img
           className="d-block w-100"
           src="https://restaurantclicks.com/wp-content/uploads/2022/01/pizza-phoenix-arizona.jpg"
-          // src="holder.js/800x400?text=First slide&bg=373940"
           alt="The Stuffed Nebula"
         />
         <Carousel.Caption>
@@ -20,7 +20,6 @@ export default function HomeCarousel() {
         <img
           className="d-block w-100"
           src="https://www.pizzahut.com/assets/w/images/homepage_deal/Sidekick_999L1T_LargeMobile_v2_541x282.jpg"
-          // src="holder.js/800x400?text=Second slide&bg=282c34"
           alt="Dozens of Red Dwarfs"
         />
 

@@ -10,8 +10,8 @@ import { EntriesT } from '../../../../@types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { switchList } from '../../redux/slices/siteSlice';
 import { capFirstChar } from '../../utils';
-import AddPizzaForm from './Forms/AddPizzaForm';
-import AddToppingForm from './Forms/AddToppingForm';
+import AddPizzaForm from '../Forms/AddPizzaForm';
+import AddToppingForm from '../Forms/AddToppingForm';
 
 type Props = {
   sortFn: (arg0: 'popular' | 'price' | 'alphabet', arg1?: boolean | undefined) => void;

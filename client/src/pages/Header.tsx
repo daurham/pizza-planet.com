@@ -11,24 +11,20 @@ import { capFirstChar } from '../utils';
 import { logOutUser } from '../redux/slices/userSlice';
 
 export default function Header() {
-  // const [user, setUser] = useState({}); // TODO: Assign the user to the login
-  // const loggedIn = null;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { user } = useAppSelector((state) => state.user);
 
   const logoutUser = () => {
-    // set user to null
     dispatch(logOutUser());
-    // navigate to home
     navigate('/');
   };
 
   const { pathname } = useLocation();
   const atHome = () => pathname === '/';
-  const atManage = () => pathname === '/admin/manage';
+  // const atManage = () => pathname === '/admin/manage';
   const atLogin = () => pathname === '/login';
-  const atAdminLogin = () => pathname === '/admin/login';
+  // const atAdminLogin = () => pathname === '/admin/login';
   return (
     <div>
       <Navbar bg="dark" variant="dark">
@@ -48,15 +44,16 @@ export default function Header() {
                 <Navbar.Text>{`Signed in as: ${capFirstChar(user.role)} ${capFirstChar(
                   user.username
                 )}`}</Navbar.Text>{' '}
-                {/* <LinkContainer> */}
-                <Button className="logout" size="sm" onClick={logoutUser}>
+                <Button
+                  className="logout"
+                  size="sm"
+                  onClick={logoutUser}
+                  style={{ marginLeft: '10px' }}
+                >
                   Logout
                 </Button>
-                {/* <Nav.Link>Logout</Nav.Link> */}
-                {/* </LinkContainer> */}
               </>
             ) : (
-              // <>
               !atLogin() && (
                 <LinkContainer to="/login">
                   <Button className="login" size="sm">

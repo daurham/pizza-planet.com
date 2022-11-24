@@ -8,7 +8,7 @@ import { EntriesT } from '../../../../@types';
 
 const fetchEntries = async ({ queryKey }: any) => {
   const { type } = queryKey[1];
-  const res = await fetch(type ? `/${type}` : '/pizza'); // TODO: Consider using axios to remain consistent
+  const res = await fetch(type ? `/${type}` : '/pizza');
   return res.json();
 };
 
@@ -21,7 +21,6 @@ export default function AdminManage() {
   });
   const [entries, setEntries] = useState<EntriesT>(data);
   const [sortedEntries, setSortedEntries] = useState<EntriesT>(data);
-  // if (data) console.log('fetched', type, ' data:', data);
 
   const sortEntries = (method: 'popular' | 'price' | 'alphabet', reverse?: boolean) => {
     if (method === 'popular') {

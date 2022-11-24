@@ -9,9 +9,14 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { useAppSelector } from '../../../redux/hooks';
-import { ToppingType } from '../../../redux/slices/toppingsSlice';
-import { capFirstChar, pizzaNameIsValid, toppingsAreUniqueFromPizzaList } from '../../../utils';
+import { useAppSelector } from '../../redux/hooks';
+import { ToppingType } from '../../redux/slices/toppingsSlice';
+import {
+  capFirstChar,
+  convertPrice,
+  pizzaNameIsValid,
+  toppingsAreUniqueFromPizzaList,
+} from '../../utils';
 
 type Props = {
   handleClose: () => void;
@@ -30,7 +35,7 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
   const [name, setName] = useState('');
   const [popularity, setPopularity] = useState<number>(0);
   const [calories, setCalories] = useState(500);
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState('$00.00');
   const [notes, setNotes] = useState('');
   const [instructions, setInstructions] = useState('');
   const [img, setImg] = useState('');
@@ -41,21 +46,16 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
-    // Case 1 : The user checks the box
     if (checked) setToppingsAdded([...toppingsAdded, value].sort());
-    // Case 2  : The user unchecks the box
     if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)].sort());
   };
 
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // IF topping is NOT unique
     if (!toppingsAreUniqueFromPizzaList(toppingsAdded, pizzas, '')) {
-      // console.log('pizzas:', pizzas);
       alert('Error: Topping combo already exists.');
       return;
     }
-    // IF name is NOT unique
     if (name === '') {
       alert('Error: Invalid pizza name.');
       return;
@@ -69,7 +69,7 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
         name: capFirstChar(name),
         popularity,
         calories,
-        price: `$${price}`,
+        price: convertPrice(price),
         notes,
         instructions,
         img,
@@ -162,19 +162,22 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
                 <InputGroup.Text>$</InputGroup.Text>
                 <FloatingLabel controlId="floatingPrice" label="Price">
                   <Form.Control
-                    type="number"
-                    size="sm"
-                    step="0.01"
-                    // className=''
+                    defaultValue={price.slice(1)}
+                    type="text"
                     placeholder="Price"
-                    onChange={(e) => setPrice(e.target.value)}
-                    aria-label="Amount (to the nearest dollar)"
+                    pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    required
                     max="100"
                     min="0"
-                    required
+                    onChange={(e) => {
+                      const re = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        setPrice(e.target.value);
+                      }
+                    }}
+                    aria-label="Amount (to the nearest dollar)"
                   />
                 </FloatingLabel>
-                <InputGroup.Text>.00</InputGroup.Text>
               </InputGroup>
             </Col>
             <Col>
@@ -184,7 +187,6 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
                   type="number"
                   size="sm"
                   placeholder="Calories"
-                  // pattern='{1-10000}'
                   max="10000"
                   min="0"
                   required
@@ -217,7 +219,6 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
               <FloatingLabel controlId="floatingImgURL" label="Image URL">
                 <Form.Control
                   size="sm"
-                  // className="mb-3"
                   onChange={(e) => setImg(e.target.value)}
                   type="image-url"
                   placeholder="Image URL"

@@ -1,17 +1,24 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
+import Modal from 'react-bootstrap/Modal';
+// import { capFirstChar, toppingIsUniqueFromToppingList } from '../../../utils';
+// import { useAppSelector } from '../../../redux/hooks';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import InputGroup from 'react-bootstrap/InputGroup';
-import Modal from 'react-bootstrap/Modal';
-import { capFirstChar, toppingIsUniqueFromToppingList } from '../../../utils';
-import { useAppSelector } from '../../../redux/hooks';
+import { convertPrice } from '../../utils';
 
 type Props = {
+  entry: {
+    name: string;
+    price: string;
+    pricingMeasurement: string;
+    img: string;
+  };
   handleClose: () => void;
   showModal: boolean;
   refetch: <TPageData>(
@@ -19,24 +26,34 @@ type Props = {
   ) => Promise<QueryObserverResult<any, unknown>>;
 };
 
-export default function AddForm({ refetch, handleClose, showModal }: Props) {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('$0.00');
-  const [pricingMeasurement, setPricingMeasurement] = useState('lb');
-  const [img, setImg] = useState(''); // TODO: Upgrade to "upload img"
+export default function AddForm({ handleClose, showModal, refetch, entry }: Props) {
+  const [price, setPrice] = useState(entry.price.slice(1));
+  const [pricingMeasurement, setPricingMeasurement] = useState(entry.pricingMeasurement);
+  const [img, setImg] = useState(entry.img); // TODO: Upgrade to "upload img"
 
-  const { toppings } = useAppSelector((state) => state.toppings);
+  // const { toppings } = useAppSelector((state) => state.toppings);
 
-  // const submitForm = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const deleteEntry = async () => {
+    try {
+      await axios.delete('/topping', {
+        data: {
+          name: entry.name,
+        },
+      });
+      refetch();
+      handleClose();
+    } catch (error) {
+      alert(`Error deleting ${entry.name}`);
+    }
+  };
+
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!toppingIsUniqueFromToppingList(capFirstChar(name), toppings)) {
-      alert(`Error: ${name} already exists.`);
-    }
     try {
-      const success = await axios.post('/topping', {
-        name: capFirstChar(name),
-        price: `$${price}.00`,
+      console.log('Submitting:', price);
+      const success = await axios.patch('/topping', {
+        name: entry.name,
+        price: convertPrice(price),
         pricingMeasurement,
         img,
       });
@@ -45,53 +62,58 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         handleClose();
       }
     } catch (error) {
-      alert(`Error adding ${name}.`);
+      alert(`Error updating ${entry.name}`);
     }
   };
+
+  // console.log('PRICE:', price);
+  // console.log('PRICE-VD:', convertPrice(price));
 
   return (
     <Modal show={showModal} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add A New Topping</Modal.Title>
+        <Modal.Title>Edit {entry.name}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form id="add-topping-form" onSubmit={(e) => submitForm(e)}>
-          <FloatingLabel controlId="floatingToppingName" label="Topping Name">
-            <Form.Control
-              onChange={(e) => setName(e.target.value)}
-              type="ToppingName"
-              placeholder="ToppingName"
-              className="mb-3"
-            />
-          </FloatingLabel>
-
+        <Form id="update-topping-form" onSubmit={(e) => submitForm(e)}>
           <Row className="g-2">
             <Col md>
               <InputGroup id="price-input" className="mb-3">
                 <InputGroup.Text>$</InputGroup.Text>
                 <FloatingLabel controlId="floatingPrice" label="Price">
                   <Form.Control
-                    type="number"
+                    defaultValue={entry.price.slice(1)}
+                    type="text"
                     placeholder="Price"
-                    onChange={(e) => setPrice(e.target.value)}
+                    pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    required
+                    max="100"
+                    min="0"
+                    onChange={(e) => {
+                      const re = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || re.test(e.target.value)) {
+                        setPrice(e.target.value);
+                      }
+                    }}
                     aria-label="Amount (to the nearest dollar)"
                   />
                 </FloatingLabel>
-                <InputGroup.Text>.00</InputGroup.Text>
               </InputGroup>
             </Col>
             <Col md>
-              {/* <Form.Label htmlFor="PricingMeasurement-input">Pricing Measurement:</Form.Label> */}
-              <FloatingLabel controlId="floatingPricingMeasurement" label="Princing Measurement">
+              <FloatingLabel
+                controlId="floatingPricingMeasurement"
+                label="Princing per measurement"
+              >
                 <Form.Select
                   className="mb-3"
                   id="PricingMeasurement-input"
-                  placeholder="Pricing Measurement"
-                  defaultValue={0}
+                  placeholder="Pricing per measurement"
+                  defaultValue={entry.pricingMeasurement}
                   onChange={(e) => setPricingMeasurement(e.target.value)}
                 >
                   {['lb', 'oz', 'g'].map((n, i) => (
-                    <option key={i} value={n}>
+                    <option defaultValue={entry.pricingMeasurement} key={i} value={n}>
                       {n}
                     </option>
                   ))}
@@ -105,7 +127,7 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
               <FloatingLabel controlId="floatingImgURL" label="Image URL">
                 <Form.Control
                   size="sm"
-                  // className="mb-3"
+                  defaultValue={entry.img}
                   onChange={(e) => setImg(e.target.value)}
                   type="image-url"
                   placeholder="Image URL"
@@ -115,8 +137,8 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
             <Col md>
               <Form.Group controlId="formFile" className="mt-3">
                 <Form.Control
-                  disabled
                   size="sm"
+                  disabled
                   placeholder="Upload Image"
                   type="file"
                   aria-disabled
@@ -130,7 +152,10 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         <Button variant="secondary" onClick={handleClose}>
           Close
         </Button>
-        <Button form="add-topping-form" type="submit" variant="primary">
+        <Button variant="danger" onClick={deleteEntry}>
+          Delete
+        </Button>
+        <Button type="submit" variant="primary" form="update-topping-form">
           Submit
         </Button>
       </Modal.Footer>

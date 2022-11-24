@@ -94,3 +94,12 @@ export const toppingIsUniqueFromToppingList = (topping: string, toppingList: Top
 export const pizzaNameIsValid = (name: string, pizzaList: PizzaType[]) => {
   return pizzaList.filter((p) => p.name === name).length === 0;
 };
+
+export const convertPrice = (value: string) => {
+  let v = value;
+  if (v.slice(0, 1) === '$') v = v.slice(1);
+  return Number(v).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
+};
