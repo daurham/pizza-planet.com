@@ -2,7 +2,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import pizzasReducer from './slices/pizzasSlice';
 import userReducer from './slices/userSlice';
-// import suppliersReducer from './slices/suppliersSlice';
 import toppingsReducer from './slices/toppingsSlice';
 import siteReducer from './slices/siteSlice';
 
@@ -10,7 +9,6 @@ const combinedReducer = combineReducers({
   toppings: toppingsReducer,
   pizzas: pizzasReducer,
   user: userReducer,
-  // suppliers: suppliersReducer,
   site: siteReducer,
 });
 

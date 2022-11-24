@@ -23,8 +23,11 @@ export const sitesSlice = createSlice({
         // return 'pizza';
       }
     },
+    setList: (state, action) => {
+      state.listType = action.payload;
+    },
   },
 });
 
-export const { switchList } = sitesSlice.actions;
+export const { switchList, setList } = sitesSlice.actions;
 export default sitesSlice.reducer;

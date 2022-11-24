@@ -10,8 +10,8 @@ import { EntriesT } from '../../../../@types';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { switchList } from '../../redux/slices/siteSlice';
 import { capFirstChar } from '../../utils';
-import AddPizzaForm from '../Forms/AddPizzaForm';
-import AddToppingForm from '../Forms/AddToppingForm';
+import AddPizzaForm from '../Globals/Forms/AddPizzaForm';
+import AddToppingForm from '../Globals/Forms/AddToppingForm';
 
 type Props = {
   sortFn: (arg0: 'popular' | 'price' | 'alphabet', arg1?: boolean | undefined) => void;
@@ -43,29 +43,27 @@ export default function ListHeader({ sortFn, filterFn, refetch, dumpEntries }: P
 
   const getOtherType = () => (type === 'pizza' ? 'topping' : 'pizza');
 
-  // console.log('reversed Val', reverseData);
-  // Add useEffect to sort on searcchQuery, reverseData change
   useEffect(() => {
     filterFn(searchQuery);
   }, [searchQuery]);
 
   return (
     <div>
-      <Navbar variant="dark" bg="dark" expand="lg">
+      <Navbar style={{ color: 'white' }} variant="dark" bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand>{`${capFirstChar(type)}s`}</Navbar.Brand>
+          <Navbar.Brand style={{ textDecoration: 'underline', color: 'white' }}>{`${capFirstChar(type)}s`}</Navbar.Brand>
           <Nav.Link onClick={handleShow}>{`Add ${capFirstChar(type)}`}</Nav.Link>
           {role === 'owner' && (
-            <Nav.Link onClick={switchListType}>{`${capFirstChar(getOtherType())}s`}</Nav.Link>
+            <Nav.Link style={{ color: 'white' }} onClick={switchListType}>{`${capFirstChar(
+              getOtherType()
+            )}s`}</Nav.Link>
           )}
-          {/* <Navbar.Toggle aria-controls="navbarScroll">Filter</Navbar.Toggle> */}
-          <NavDropdown title="Filter" id="navbarScrollingDropdown">
+          <NavDropdown style={{ color: 'white' }} title="Filter" id="navbarScrollingDropdown">
             <Nav
               className="navbar-custom me-auto my-3 my-lg-0"
               style={{ maxHeight: '100px' }}
               navbarScroll
             >
-              {/* <Navbar.Collapse id="navbarScroll"> */}
               <NavDropdown.Item onClick={() => sortFn('alphabet', reverseData)}>
                 A - Z
               </NavDropdown.Item>
@@ -85,7 +83,6 @@ export default function ListHeader({ sortFn, filterFn, refetch, dumpEntries }: P
                 />
                 Reverse
               </NavDropdown.ItemText>
-              {/* </Navbar.Collapse> */}
             </Nav>
           </NavDropdown>
           <Form className="d-flex">
@@ -96,7 +93,7 @@ export default function ListHeader({ sortFn, filterFn, refetch, dumpEntries }: P
               aria-label="Search"
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <Button variant="outline-success">Search</Button>
+            <Button variant="outline-warning">Search</Button>
           </Form>
         </Container>
       </Navbar>

@@ -21,7 +21,6 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     logInUser: (state, action) => {
-      // console.log('Seeting thi as user data:', action.payload);
       state.user = action.payload;
     },
     logOutUser: (state) => {

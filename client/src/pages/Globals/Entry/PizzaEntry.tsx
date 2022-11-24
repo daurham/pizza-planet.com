@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Accordion from 'react-bootstrap/Accordion';
 
 import UpdatePizzaForm from '../Forms/UpdatePizzaForm';
-import { PizzaType } from '../../redux/slices/pizzasSlice';
+import { PizzaType } from '../../../redux/slices/pizzasSlice';
 
 interface Props extends PizzaType {
   refetch: <TPageData>(
@@ -53,7 +53,7 @@ export default function Entry({
   return (
     <div>
       {atHome() && (
-        <Card style={{ width: '30vw' }}>
+        <Card className={`card-pizza-${id} home-card`} style={{ width: '30vw' }}>
           <Card.Body>
             <Card.Img
               src={img}

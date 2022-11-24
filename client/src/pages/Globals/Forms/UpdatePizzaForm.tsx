@@ -8,9 +8,9 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import { useAppSelector } from '../../redux/hooks';
-import { convertPrice, parseToppings, toppingsAreUniqueFromPizzaList } from '../../utils';
-import { ToppingType } from '../../redux/slices/toppingsSlice';
+import { useAppSelector } from '../../../redux/hooks';
+import { convertPrice, parseToppings, toppingsAreUniqueFromPizzaList } from '../../../utils';
+import { ToppingType } from '../../../redux/slices/toppingsSlice';
 
 type Props = {
   entry: {
@@ -176,8 +176,8 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                     max="100"
                     min="0"
                     onChange={(e) => {
-                      const re = /^(0|[1-9]\d*)(\.\d+)?$/;
-                      if (e.target.value === '' || re.test(e.target.value)) {
+                      const regex = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || regex.test(e.target.value)) {
                         setPrice(e.target.value);
                       }
                     }}

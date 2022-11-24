@@ -5,8 +5,8 @@ import Button from 'react-bootstrap/Button';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { logInUser } from '../redux/slices/userSlice';
-import { useAppDispatch } from '../redux/hooks';
+import { logInUser } from '../../redux/slices/userSlice';
+import { useAppDispatch } from '../../redux/hooks';
 
 type Props = {
   isNew: boolean;
@@ -43,7 +43,7 @@ export default function Login({ isNew }: Props) {
     }
     if (!isNew) {
       try {
-        // Authenticate User
+        // TODO: Authenticate User
         const success = await axios.post(`/user/auth`, {
           email,
           password,
@@ -73,7 +73,7 @@ export default function Login({ isNew }: Props) {
         <Form onSubmit={(e) => sumbitUser(e)} id="login-form">
           <FloatingLabel className="mb-3" controlId="floatingEmail" label="Email">
             <Form.Control
-              id="user-email"
+              placeholder="Email"
               type="text"
               className="login-input"
               onChange={(e) => setEmail(e.target.value)}
@@ -84,6 +84,7 @@ export default function Login({ isNew }: Props) {
               <FloatingLabel className="mb-3" controlId="floatingUserName" label="Username">
                 <Form.Control
                   type="text"
+                  placeholder="Username"
                   className="login-input"
                   onChange={(e) => setUsername(e.target.value)}
                 />
@@ -101,7 +102,7 @@ export default function Login({ isNew }: Props) {
           )}
           <FloatingLabel className="mb-3" controlId="floatingPassword" label="Password">
             <Form.Control
-              id="user-password"
+              placeholder="Password"
               type="password"
               className="login-input"
               onChange={(e) => setPassword(e.target.value)}

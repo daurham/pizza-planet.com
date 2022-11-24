@@ -16,16 +16,12 @@ model Topping {
   name               String  @unique @db.Text
   price              String? @db.Text
   pricingMeasurement String? @db.Text
-  // supplier          Supplier @relation(fields: [supplierId], references: [id])
-  // supplierId        Int      @db.Integer
   img                String? @db.Text
 }
 
 model Pizza {
   id           Int     @id @default(autoincrement())
   name         String  @unique @db.Text
-  // createdBy    User   @relation(fields: [staffId], references: [id])
-  // staffId      Int     @db.Integer
   popularity   Int?    @db.Integer
   price        String? @db.Text
   calories     Int?    @db.Integer
@@ -41,13 +37,4 @@ model User {
   email    String @db.Text
   password String @db.Text
   role     String @db.Text
-  // Pizza    Pizza[]
 }
-
-// model Supplier {
-//   id      Int       @id @default(autoincrement())
-//   name    String    @db.Text
-//   number  String    @db.Text
-//   email   String    @db.Text
-// Topping Topping[]
-// }

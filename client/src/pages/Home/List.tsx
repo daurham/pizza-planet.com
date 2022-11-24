@@ -1,7 +1,7 @@
 import React from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import { PizzaType } from '../../redux/slices/pizzasSlice';
-import PizzaEntry from '../Entry/PizzaEntry';
+import PizzaEntry from '../Globals/Entry/PizzaEntry';
 
 interface PizzaProps {
   entries: PizzaType[];

@@ -17,11 +17,9 @@ app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.json());
 app.use('/', routes_1.default);
 app.get('/*', (req, res) => {
-    // console.log('coming in at a random route, to:', CLIENT);
-    res.sendFile(path_1.default.join(CLIENT + '/index.html'), (err) => {
-        if (err) {
+    res.sendFile(path_1.default.join(path_1.default.join(CLIENT, '/index.html')), (err) => {
+        if (err)
             res.status(500).send(err);
-        }
     });
 });
 app.listen(PORT, () => console.log(`Running at ${URL}`));

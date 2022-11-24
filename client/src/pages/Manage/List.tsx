@@ -2,9 +2,8 @@ import React from 'react';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-query';
 import { ToppingType } from '../../redux/slices/toppingsSlice';
 import { PizzaType } from '../../redux/slices/pizzasSlice';
-import PizzaEntry from '../Entry/PizzaEntry';
-import ToppingEntry from '../Entry/ToppingEntry';
-// import { useAppSelector } from '../../redux/hooks';
+import PizzaEntry from '../Globals/Entry/PizzaEntry';
+import ToppingEntry from '../Globals/Entry/ToppingEntry';
 
 interface ToppingProps {
   type: 'topping';
@@ -25,21 +24,14 @@ interface PizzaProps {
 type Props = PizzaProps | ToppingProps;
 
 export default function List({ entries, type, refetch }: Props) {
-  // const { listType } = useAppSelector((state) => state.site);
-  // console.log('entries', entries);
   if (!entries) return <p>Loading..</p>;
-  // console.log('TYPE:', type);
   return (
     <div className="list">
-      {/* {type} */}
-      {/* {JSON.stringify(entries)} */}
       {type === 'pizza' &&
         entries.map((e) => (
           <PizzaEntry
             key={e.id}
             id={e.id}
-            // staffId={e.staffId}
-            // createdBy={e.createdBy}
             name={e.name}
             calories={e.calories}
             popularity={e.popularity}
@@ -60,8 +52,6 @@ export default function List({ entries, type, refetch }: Props) {
             price={e.price}
             img={e.img}
             pricingMeasurement={e.pricingMeasurement}
-            // supplier={e.supplier}
-            // supplierId={e.supplierId}
             refetch={refetch}
           />
         ))}

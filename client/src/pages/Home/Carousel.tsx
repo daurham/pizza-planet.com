@@ -12,8 +12,8 @@ export default function HomeCarousel() {
           alt="The Stuffed Nebula"
         />
         <Carousel.Caption>
-          <h3>The Stuffed Nebula</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+          {/* <h3>The Stuffed Nebula</h3>
+          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p> */}
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
@@ -24,21 +24,20 @@ export default function HomeCarousel() {
         />
 
         <Carousel.Caption>
-          <h3>Dozens of Red Dwarfs</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+          {/* <h3>Dozens of Red Dwarfs</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p> */}
         </Carousel.Caption>
       </Carousel.Item>
       <Carousel.Item>
         <img
           className="d-block w-100"
           src="https://www.seriouseats.com/thmb/c9291mRIx6n1mtaxIRuypUe4mhs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__2017__02__20170216-detroit-style-pizza-47-1500x1125-1-233d75e6021048b3bf3cf28bd59d310b.jpg"
-          // src="holder.js/800x400?text=Third slide&bg=20232a"
           alt="Space Blockade"
         />
 
         <Carousel.Caption>
-          <h3>Space Blockade</h3>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+          {/* <h3>Space Blockade</h3>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p> */}
         </Carousel.Caption>
       </Carousel.Item>
     </Carousel>

@@ -8,8 +8,8 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Modal from 'react-bootstrap/Modal';
-import { capFirstChar, convertPrice, toppingIsUniqueFromToppingList } from '../../utils';
-import { useAppSelector } from '../../redux/hooks';
+import { capFirstChar, convertPrice, toppingIsUniqueFromToppingList } from '../../../utils';
+import { useAppSelector } from '../../../redux/hooks';
 
 type Props = {
   handleClose: () => void;
@@ -40,6 +40,7 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         img,
       });
       if (success) {
+        setPrice('$0.00');
         refetch();
         handleClose();
       }
@@ -70,10 +71,24 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
                 <InputGroup.Text>$</InputGroup.Text>
                 <FloatingLabel controlId="floatingPrice" label="Price">
                   <Form.Control
-                    type="number"
+                    defaultValue={price.slice(1)}
+                    type="text"
                     placeholder="Price"
-                    onChange={(e) => setPrice(e.target.value)}
+                    pattern="^(0|[1-9]\d*)(\.\d+)?$"
+                    required
+                    max="100"
+                    min="0"
+                    onChange={(e) => {
+                      const regex = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || regex.test(e.target.value)) {
+                        setPrice(e.target.value);
+                      }
+                    }}
                     aria-label="Amount (to the nearest dollar)"
+                    // type="number"
+                    // placeholder="Price"
+                    // onChange={(e) => setPrice(e.target.value)}
+                    // aria-label="Amount (to the nearest dollar)"
                   />
                 </FloatingLabel>
               </InputGroup>

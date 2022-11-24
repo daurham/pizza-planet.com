@@ -10,7 +10,7 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { convertPrice } from '../../utils';
+import { convertPrice } from '../../../utils';
 
 type Props = {
   entry: {
@@ -50,7 +50,6 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
   const submitForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      console.log('Submitting:', price);
       const success = await axios.patch('/topping', {
         name: entry.name,
         price: convertPrice(price),
@@ -65,9 +64,6 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
       alert(`Error updating ${entry.name}`);
     }
   };
-
-  // console.log('PRICE:', price);
-  // console.log('PRICE-VD:', convertPrice(price));
 
   return (
     <Modal show={showModal} onHide={handleClose}>

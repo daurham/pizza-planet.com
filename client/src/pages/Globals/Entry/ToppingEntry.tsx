@@ -4,7 +4,7 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from 'react-
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
-import { ToppingType } from '../../redux/slices/toppingsSlice';
+import { ToppingType } from '../../../redux/slices/toppingsSlice';
 import UpdateToppingForm from '../Forms/UpdateToppingForm';
 
 interface Props extends ToppingType {
@@ -20,7 +20,7 @@ export default function Entry({ refetch, name, id, price, pricingMeasurement, im
 
   return (
     <div>
-      <Card style={{ width: '25rem' }}>
+      <Card className={`card-topping-${id}`} style={{ width: '25rem' }}>
         <Card.Body>
           <Row className="entry">
             <Col className="entry--image">

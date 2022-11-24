@@ -9,14 +9,14 @@ import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 
-import { useAppSelector } from '../../redux/hooks';
-import { ToppingType } from '../../redux/slices/toppingsSlice';
+import { useAppSelector } from '../../../redux/hooks';
+import { ToppingType } from '../../../redux/slices/toppingsSlice';
 import {
   capFirstChar,
   convertPrice,
   pizzaNameIsValid,
   toppingsAreUniqueFromPizzaList,
-} from '../../utils';
+} from '../../../utils';
 
 type Props = {
   handleClose: () => void;
@@ -76,6 +76,7 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
         toppings: JSON.stringify(toppingsAdded),
       });
       if (success) {
+        setPrice('$00.00');
         refetch();
         handleClose();
       }
@@ -170,8 +171,8 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
                     max="100"
                     min="0"
                     onChange={(e) => {
-                      const re = /^(0|[1-9]\d*)(\.\d+)?$/;
-                      if (e.target.value === '' || re.test(e.target.value)) {
+                      const regex = /^(0|[1-9]\d*)(\.\d+)?$/;
+                      if (e.target.value === '' || regex.test(e.target.value)) {
                         setPrice(e.target.value);
                       }
                     }}

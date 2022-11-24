@@ -26,12 +26,6 @@ export const pizzaSlice = createSlice({
   name: 'pizzas',
   initialState,
   reducers: {
-    // addPizza: (state, action) => {
-    //   const newPizza: any = action.payload;
-    //   // Assume! This is for when I validate a pizzas uniqueness, post to db, THEN get pizzas,
-    //   //  --I'll add to here.
-    //   state.pizzas = [newPizza, ...state.pizzas];
-    // },
     storePizzas: (state, action) => {
       state.pizzas = action.payload;
     },

@@ -18,6 +18,7 @@
     "no-console": "off",
     "no-alert": "off",
     "no-void": "off",
+    "react/no-array-index-key": "off",
     "react-hooks/exhaustive-deps": [
       "warn",
       {

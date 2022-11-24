@@ -5,8 +5,11 @@
   "main": "index.js",
   "scripts": {
     "start": "webpack -w",
+    "client-build": "webpack",
+    "client-dev": "webpack -w",
     "server": "bash runServer.sh",
-    "server-build": "tsc --project tsconfig.server.json -w",
+    "server-build": "tsc --project tsconfig.server.json",
+    "server-dev": "tsc --project tsconfig.server.json -w",
     "format": "prettier -w",
     "test": ""
   },

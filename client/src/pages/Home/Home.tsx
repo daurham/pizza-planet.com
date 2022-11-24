@@ -1,6 +1,5 @@
 import React from 'react';
 import { useQuery } from 'react-query';
-import Loading from '../../components/Loading';
 import Carousel from './Carousel';
 import List from './List';
 
@@ -21,7 +20,7 @@ export default function Home() {
       </div>
       <h1 style={{ textAlign: 'center' }}>Our Pizzas</h1>
       <div className="list-container">
-        {status === 'loading' && <Loading />}
+        {status === 'loading' && <h2>Loading...</h2>}
         {status === 'error' && <p>Error Loading Pizzas!</p>}
         {data && <List entries={data} refetch={refetch} />}
       </div>
