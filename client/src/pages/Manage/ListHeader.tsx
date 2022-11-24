@@ -51,7 +51,9 @@ export default function ListHeader({ sortFn, filterFn, refetch, dumpEntries }: P
     <div>
       <Navbar style={{ color: 'white' }} variant="dark" bg="dark" expand="lg">
         <Container fluid>
-          <Navbar.Brand style={{ textDecoration: 'underline', color: 'white' }}>{`${capFirstChar(type)}s`}</Navbar.Brand>
+          <Navbar.Brand style={{ textDecoration: 'underline', color: 'white' }}>{`${capFirstChar(
+            type
+          )}s`}</Navbar.Brand>
           <Nav.Link onClick={handleShow}>{`Add ${capFirstChar(type)}`}</Nav.Link>
           {role === 'owner' && (
             <Nav.Link style={{ color: 'white' }} onClick={switchListType}>{`${capFirstChar(

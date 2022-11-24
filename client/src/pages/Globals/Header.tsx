@@ -28,8 +28,6 @@ export default function Header() {
   return (
     <div className="">
       <div className="header-container">
-        {/* <Navbar bg="bg-" variant="outline-primary"> */}
-        {/* <Navbar bg="dark" variant="dark" fixed="top" /* style={{ backgroundColor: '#e3cec1' }} */}
         <Navbar bg="dark" variant="dark" style={{ backgroundColor: '#e3cec1' }}>
           <Container>
             <LinkContainer to="/">
@@ -37,7 +35,6 @@ export default function Header() {
             </LinkContainer>
             <Navbar.Toggle />
             {atHome() && (
-              // <LinkContainer to="/order">
               <LinkContainer style={{ color: 'white' }} to="/order">
                 <Nav.Link style={{ color: 'white' }} className="justify-content-center">
                   Order Now
