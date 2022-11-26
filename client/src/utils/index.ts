@@ -39,6 +39,7 @@ export const toppingsAreUniqueFromPizzaList = (
       }
     }
   });
+  console.log(pizzaList);
   return !copyFound;
 };
 

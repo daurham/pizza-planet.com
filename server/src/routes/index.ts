@@ -1,4 +1,5 @@
 // https://expressjs.com/en/guide/routing.html
+// Auth0 -> https://auth0.com/docs/quickstart/backend/nodejs/interactive
 import { Router } from 'express';
 import {
   authenticateUserLogin,

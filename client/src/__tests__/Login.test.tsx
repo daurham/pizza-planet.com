@@ -2,6 +2,8 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
 import Login, { Props } from '../pages/Login/Login';
 import { MemoryRouter } from 'react-router-dom';
+// import { createRoot } from 'react-dom/client';
+
 import { Provider } from 'react-redux';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { store } from '../redux/store';
@@ -31,6 +33,10 @@ describe('<Login />', () => {
       },
       isNew: false,
     };
+// const container = document.getElementById('app');
+// const root = createRoot(container!); // createRoot(container!) if you use TypeScript
+// root.render(<App tab="home" />);
+    
     return render(
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
@@ -44,7 +50,6 @@ describe('<Login />', () => {
 
   test('should render a login component, with the header reading "Login to your account!"', async () => {
     const { findByTestId } = renderLogin();
-
     const header = await findByTestId('login-header');
 
     expect(header).toHaveTextContent('Login to your account!');
@@ -52,7 +57,6 @@ describe('<Login />', () => {
 
   test('should not render a login component, with the header reading "Signup!"', async () => {
     const { findByTestId } = renderLogin();
-
     const header = await findByTestId('login-header');
 
     expect(header).not.toHaveTextContent('Signup!');
@@ -60,7 +64,6 @@ describe('<Login />', () => {
 
   test('should display a blank login form, with the header reading "Signup!"', async () => {
     const { findByTestId } = renderLogin({ isNew: true });
-
     const header = await findByTestId('login-header');
 
     expect(header).toHaveTextContent('Signup!');

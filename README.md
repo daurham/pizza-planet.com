@@ -75,3 +75,8 @@ http://localhost:3000
 ```
 npm run test
 ```
+
+
+## Next Steps:
+- [ ] Create more tests
+- [ ] Implement Auth0
