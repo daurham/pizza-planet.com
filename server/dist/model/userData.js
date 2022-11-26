@@ -16,18 +16,14 @@ exports.postUser = exports.authenticateUser = exports.findUser = void 0;
 const database_1 = __importDefault(require("../database"));
 const findUser = (email, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        console.log('finding email:', email);
-        // TODO: TEST with true and fake users
         const data = yield database_1.default.user.findFirstOrThrow({
             where: {
                 email,
             },
         });
-        console.log('findU: valid user-- SUCCESS', data);
         res.send(data);
     }
     catch (error) {
-        console.log('findU: valid user-- ERROR');
         console.error(error);
         res.sendStatus(500);
     }
@@ -35,18 +31,15 @@ const findUser = (email, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.findUser = findUser;
 const authenticateUser = (email, password, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // TODO: TEST with true and fake users
         const data = yield database_1.default.user.findFirstOrThrow({
             where: {
                 email,
                 password,
             },
         });
-        console.log('authU: valid user-- SUCCESS:', data);
         res.send(data);
     }
     catch (error) {
-        console.log('authU: valid user-- ERROR');
         console.error(error);
         res.sendStatus(500);
     }

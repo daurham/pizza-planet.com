@@ -2,12 +2,12 @@ p {
   margin: 0;
 }
 
-.login .logout .btn {
-  margin-left: 10px;
-}
-
 a {
   color: white;
+}
+
+.login .logout .btn {
+  margin-left: 10px;
 }
 
 .tt {

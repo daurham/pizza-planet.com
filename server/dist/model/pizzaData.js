@@ -17,11 +17,9 @@ const database_1 = __importDefault(require("../database"));
 const getPizza = (res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield database_1.default.pizza.findMany();
-        console.log('getting pizza-- SUCCESS');
         res.send(data);
     }
     catch (error) {
-        console.log('getting pizza-- ERROR');
         console.error(error);
         res.sendStatus(500);
     }

@@ -21,7 +21,7 @@ export default function AdminManage() {
   });
   const [entries, setEntries] = useState<EntriesT>(data);
   const [sortedEntries, setSortedEntries] = useState<EntriesT>(data);
-  console.log('type / data:', type, data);
+
   const sortEntries = (method: 'popular' | 'price' | 'alphabet', reverse?: boolean) => {
     if (method === 'popular') {
       const e = [...entries];

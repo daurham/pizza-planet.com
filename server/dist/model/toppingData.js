@@ -17,11 +17,9 @@ const database_1 = __importDefault(require("../database"));
 const getTopping = (res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const data = yield database_1.default.topping.findMany();
-        console.log('getting topping-- SUCCESS');
         res.send(data);
     }
     catch (error) {
-        console.log('getting topping-- ERROR');
         console.error(error);
         res.sendStatus(500);
     }
@@ -46,7 +44,6 @@ const postTopping = (name, price, pricingMeasurement, img, res) => __awaiter(voi
 });
 exports.postTopping = postTopping;
 const deleteTopping = (name, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('deleting:', name);
     try {
         const success = yield database_1.default.topping.delete({
             where: {

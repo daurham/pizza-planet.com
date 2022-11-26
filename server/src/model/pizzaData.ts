@@ -4,10 +4,8 @@ import prisma from '../database';
 export const getPizza = async (res: Response) => {
   try {
     const data = await prisma.pizza.findMany();
-    console.log('getting pizza-- SUCCESS');
     res.send(data);
   } catch (error) {
-    console.log('getting pizza-- ERROR');
     console.error(error);
     res.sendStatus(500);
   }

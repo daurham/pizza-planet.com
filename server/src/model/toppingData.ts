@@ -1,13 +1,11 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import prisma from '../database';
 
 export const getTopping = async (res: Response) => {
   try {
     const data = await prisma.topping.findMany();
-    console.log('getting topping-- SUCCESS');
     res.send(data);
   } catch (error) {
-    console.log('getting topping-- ERROR');
     console.error(error);
     res.sendStatus(500);
   }
@@ -37,7 +35,6 @@ export const postTopping = async (
 };
 
 export const deleteTopping = async (name: string, res: Response) => {
-  console.log('deleting:', name);
   try {
     const success = await prisma.topping.delete({
       where: {

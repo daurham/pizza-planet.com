@@ -10,7 +10,7 @@ import Accordion from 'react-bootstrap/Accordion';
 import UpdatePizzaForm from '../Forms/UpdatePizzaForm';
 import { PizzaType } from '../../../redux/slices/pizzasSlice';
 
-interface Props extends PizzaType {
+export interface Props extends PizzaType {
   refetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<any, unknown>>;
@@ -51,7 +51,7 @@ export default function Entry({
   const atManage = () => pathname === '/admin/manage';
 
   return (
-    <div>
+    <div data-testid="pizza-entry">
       {atHome() && (
         <Card className={`card-pizza-${id} home-card`} style={{ width: '30vw' }}>
           <Card.Body>
@@ -101,8 +101,7 @@ export default function Entry({
                       <Accordion.Body>{notes}</Accordion.Body>
                     </Accordion.Item>
                   </Accordion>
-                  {/* <Card.Text>Notes: {notes}</Card.Text> */}
-                  <Button size="sm" variant="secondary" onClick={handleShow}>
+                  <Button data-testid="edit-btn" size="sm" variant="secondary" onClick={handleShow}>
                     Edit
                   </Button>
                 </Col>

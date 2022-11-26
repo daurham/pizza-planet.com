@@ -5,12 +5,8 @@ const express_1 = require("express");
 const controller_1 = require("../controller");
 const router = (0, express_1.Router)();
 router.use((req, res, next) => {
-    // console.log('req', req);
-    console.log('req.body:', req.body);
-    // console.log('req.params:', req.params);
-    // console.log('req.query:', req.query);
+    // console.log('req.body:', req.body); // Testing
     console.log(`${req.url} => ${req.method} Request: ${new Date().toLocaleTimeString()}`);
-    // console.log(`${req.method} Request: ${new Date().toLocaleTimeString()}`);
     next();
 });
 // Login

@@ -8,9 +8,7 @@ export const capFirstChar = (s: string) => {
   return result;
 };
 
-export const stringifyToppings = (tops: string[]) => {
-  return JSON.stringify(tops);
-};
+export const stringifyToppings = (tops: string[]) => JSON.stringify(tops);
 
 export const parseToppings = (topString: string): string[] => {
   return JSON.parse(topString).map((t: string) => capFirstChar(t));

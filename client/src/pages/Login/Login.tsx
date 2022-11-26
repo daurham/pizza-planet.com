@@ -8,11 +8,26 @@ import { useNavigate } from 'react-router-dom';
 import { logInUser } from '../../redux/slices/userSlice';
 import { useAppDispatch } from '../../redux/hooks';
 
-type Props = {
-  isNew: boolean;
-};
+interface TestingProps {
+  onUsernameChange?: (username: string) => void;
+  onPasswordChange?: (password: string) => void;
+  onRoleChange?: (role: string) => void;
+  onEmailChange?: (email: string) => void;
+  onSubmit?: (email: string, username: string, password: string, role: string) => void;
+}
 
-export default function Login({ isNew }: Props) {
+export interface Props extends TestingProps {
+  isNew: boolean;
+}
+
+export default function Login({
+  isNew,
+  onUsernameChange,
+  onPasswordChange,
+  onRoleChange,
+  onEmailChange,
+  onSubmit,
+}: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [username, setUsername] = useState('');
@@ -20,15 +35,15 @@ export default function Login({ isNew }: Props) {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const sumbitUser = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+
+  const sumbitUser = async () => {
     if (isNew) {
       try {
         const success = await axios.post('/user', {
           email,
           password,
           username,
-          role,
+          role: role || 'customer',
         });
         if (success) alert('User Added! Signing you in.');
       } catch (error) {
@@ -37,13 +52,14 @@ export default function Login({ isNew }: Props) {
       const { data } = await axios.get(`/user?email=${email}`);
 
       dispatch(logInUser(data));
+
       if (data.role === 'customer') navigate('/');
       if (data.role === 'owner') navigate('/admin/manage');
       if (data.role === 'chef') navigate('/admin/manage');
     }
     if (!isNew) {
       try {
-        // TODO: Authenticate User
+        // TODO: Authenticate User w/ Auth0
         const success = await axios.post(`/user/auth`, {
           email,
           password,
@@ -51,6 +67,7 @@ export default function Login({ isNew }: Props) {
         if (success) {
           const { data } = await axios.get(`/user?email=${email}`);
           dispatch(logInUser(data));
+
           if (data.role === 'customer') navigate('/');
           if (data.role === 'owner') navigate('/admin/manage');
           if (data.role === 'chef') navigate('/admin/manage');
@@ -61,36 +78,78 @@ export default function Login({ isNew }: Props) {
     }
   };
 
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setUsername(value);
+    onUsernameChange!(value);
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setEmail(value);
+    onEmailChange!(value);
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setPassword(value);
+    onPasswordChange!(value);
+  };
+
+  const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    setRole(value);
+    onRoleChange!(value);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sumbitUser();
+    onSubmit!(email, username, password, role || 'customer');
+  };
+
   return (
     <div>
-      {isNew ? (
-        <h1 className="login-header">Signup!</h1>
-      ) : (
-        <h1 className="login-header">Login to your account!</h1>
-      )}
+      <h1 data-testid="login-header" className="login-header">
+        {isNew ? 'Signup!' : 'Login to your account!'}
+      </h1>
 
       <div className="login-form">
-        <Form onSubmit={(e) => sumbitUser(e)} id="login-form">
+        <Form
+          // onSubmit={(e) => sumbitUser(e)}
+          onSubmit={handleSubmit}
+          id="login-form"
+          data-testid="login-form"
+        >
           <FloatingLabel className="mb-3" controlId="floatingEmail" label="Email">
             <Form.Control
+              data-testid="email"
               placeholder="Email"
               type="text"
               className="login-input"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
+              // onChange={(e) => setEmail(e.target.value)}
             />
           </FloatingLabel>
           {isNew && (
             <>
               <FloatingLabel className="mb-3" controlId="floatingUserName" label="Username">
                 <Form.Control
+                  data-testid="username"
                   type="text"
                   placeholder="Username"
                   className="login-input"
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={handleUsernameChange}
+                  // onChange={(e) => setUsername(e.target.value)}
                 />
               </FloatingLabel>
               <FloatingLabel className="mb-3" controlId="floatingRole" label="Role">
-                <Form.Select id="user-role" onChange={(e) => setRole(e.target.value)}>
+                <Form.Select
+                  data-testid="role"
+                  id="user-role"
+                  onChange={handleRoleChange}
+                  // onChange={(e) => setRole(e.target.value)}
+                >
                   {['customer', 'chef', 'owner'].map((n, i) => (
                     <option defaultValue="customer" key={i} value={n}>
                       {n}
@@ -103,9 +162,11 @@ export default function Login({ isNew }: Props) {
           <FloatingLabel className="mb-3" controlId="floatingPassword" label="Password">
             <Form.Control
               placeholder="Password"
+              data-testid="password"
               type="password"
               className="login-input"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handlePasswordChange}
+              // onChange={(e) => setPassword(e.target.value)}
             />
           </FloatingLabel>
         </Form>
@@ -122,10 +183,19 @@ export default function Login({ isNew }: Props) {
             </Button>
           </LinkContainer>
         )}
-        <Button type="submit" variant="primary" form="login-form">
+        <Button data-testid="submit" type="submit" variant="primary" form="login-form">
           Login
         </Button>
       </div>
     </div>
   );
 }
+
+Login.defaultProps = {
+  onUsernameChange: (username: string) => username,
+  onPasswordChange: (password: string) => password,
+  onRoleChange: (role: string) => role,
+  onEmailChange: (email: string) => email,
+  onSubmit: (email: string, username: string, password: string, role: string) =>
+    `${email}${username}${password}${role}`,
+};
