@@ -1,7 +1,22 @@
 # pizza-planet.com
 A customer &amp; management facing, full-stack app for a pizza restaurant.
 
-## Locally Deploy
+## Exploring The Deployed App:
+1. Navigate to [Homepage](http://54.242.125.160:3000/)
+2. Select login in the top right corner.
+3. Make an account or log into one I made:
+   1. Role: Owner
+      1. email: jini@gmail.com
+      2. password: '1234'
+   2. Role: Chef
+      1. email: jake@gmail.com
+      2. password: '1234'
+   3. Role: Customer
+      1. email: corey@gmail.com
+      2. password: '1234'
+4. As a member of the staff, navigate the pizza manager and create Pizzas / add new toppings.
+
+## Locally Deploy:
 1. Clone down this repository
   ```
   npm git clone https://github.com/daurham/pizza-planet.com.git
@@ -24,7 +39,7 @@ A customer &amp; management facing, full-stack app for a pizza restaurant.
       # nvm:
       curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash 
       ```
-4. Use Node version 18.17.0
+4. Use Node version 18.17.0* (May work without)
 ```
 nvm use 18.17.0
 ```
@@ -55,7 +70,7 @@ http://localhost:3000
 - Or whatever your `http://[HOST]:[PORT]` are.
 
 ---
-## Locally Test
+## Locally Test:
 1. After setting up to deploy locally, start testing:
 ```
 npm run test
