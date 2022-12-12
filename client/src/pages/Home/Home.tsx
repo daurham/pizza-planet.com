@@ -3,13 +3,20 @@ import { useQuery } from 'react-query';
 import Carousel from './Carousel';
 import List from './List';
 
+interface TestingProps {
+  onDataFetch?: (data: any[]) => void;
+}
+
+export interface Props extends TestingProps {}
+
 const fetchPizzas = async () => {
   const res = await fetch('/pizza');
   return res.json();
 };
 
-export default function Home() {
+export default function Home({ onDataFetch }: Props) {
   const { data, status, refetch } = useQuery('pizzas', fetchPizzas);
+  if (data) onDataFetch!(data);
   return (
     <div>
       <br />
@@ -27,3 +34,7 @@ export default function Home() {
     </div>
   );
 }
+
+Home.defaultProps = {
+  onDataFetch: (data: any[]) => data,
+};

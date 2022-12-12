@@ -36,7 +36,6 @@ const fetchToppings = async () => {
 };
 
 export default function AddForm({ refetch, handleClose, showModal, entry }: Props) {
-  // const [name, setName] = useState(entry.name);
   const [popularity, setPopularity] = useState(entry.popularity);
   const [calories, setCalories] = useState(entry.calories);
   const [price, setPrice] = useState(entry.price);
@@ -50,9 +49,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
-    // Case 1 : The user checks the box
     if (checked) setToppingsAdded([...toppingsAdded, value].sort());
-    // Case 2  : The user unchecks the box
     if (!checked) setToppingsAdded([...toppingsAdded.filter((el) => el !== value)].sort());
   };
 
@@ -85,7 +82,7 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
         price: convertPrice(price),
         notes,
         instructions,
-        img,
+        img: img || 'https://speedwaymedia.com/wp-content/uploads/2019/04/no-image-available.jpg',
         toppings: JSON.stringify(toppingsAdded),
       });
       if (success) {
@@ -229,7 +226,6 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
                 <Form.Control
                   size="sm"
                   defaultValue={entry.img}
-                  // className="mb-3"
                   onChange={(e) => setImg(e.target.value)}
                   type="image-url"
                   placeholder="Image URL"
@@ -248,163 +244,6 @@ export default function AddForm({ refetch, handleClose, showModal, entry }: Prop
               </Form.Group>
             </Col>
           </Row>
-
-          {/*           
-          <Row className="align-items-center">
-            <Col sm={3} className="my-1">
-              <Form.Label htmlFor="topping-input">Toppings:</Form.Label>
-              <Form.Group id="topping-input">
-                {status === 'loading' && <p>Loading..</p>}
-                {status === 'error' && <p>Error getting toppings</p>}
-                {status === 'success' &&
-                  data.map((t: ToppingType) => (
-                    <div key={t.id} className="mb-1">
-                      <Form.Check
-                        label={t.name}
-                        value={t.name}
-                        type="checkbox"
-                        onChange={(e) => handleChange(e)}
-                        inline
-                      />
-                    </div>
-                  ))}
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <InputGroup id="price-input" className="mb-3">
-            <InputGroup.Text>$</InputGroup.Text>
-            <FloatingLabel controlId="floatingPrice" label="Price">
-              <Form.Control
-                type="number"
-                placeholder="Price"
-                onChange={(e) => setPrice(e.target.value)}
-                aria-label="Amount (to the nearest dollar)"
-                max="100"
-                min="0"
-                required
-              />
-            </FloatingLabel>
-            <InputGroup.Text>.00</InputGroup.Text>
-          </InputGroup>
-
-          <FloatingLabel className="mb-3" controlId="floatingCalories" label="Calories">
-            <Form.Control
-              onChange={(e) => setCalories(Number(e.target.value))}
-              type="number"
-              placeholder="Calories"
-              // pattern='{1-10000}'
-              max="10000"
-              min="0"
-              required
-            />
-          </FloatingLabel>
-
-          <Form.Label htmlFor="popularity-input">Popularity Rating:</Form.Label>
-          <Form.Select
-            className="mb-3"
-            id="popularity-input"
-            defaultValue={0}
-            onChange={(e) => setPopularity(Number(e.target.value))}
-          >
-            {[0, 1, 2, 3, 4, 5].map((n, i) => (
-              <option key={i} value={n}>
-                {n}
-              </option>
-            ))}
-          </Form.Select>
-
-          <FloatingLabel controlId="floatingNotes" label="Notes">
-            <Form.Control
-              as="textarea"
-              className="mb-3"
-              onChange={(e) => setNotes(e.target.value)}
-              placeholder="Leave a comment here"
-              style={{ height: '75px' }}
-            />
-          </FloatingLabel>
-          <FloatingLabel controlId="floatingInstructions" label="Instructions">
-            <Form.Control
-              as="textarea"
-              className="mb-3"
-              onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Leave baking instructions here"
-              style={{ height: '150px' }}
-            />
-          </FloatingLabel>
-
-          <Row className="g-2">
-            <Col md>
-              <FloatingLabel controlId="floatingImgURL" label="Image URL">
-                <Form.Control
-                  size="sm"
-                  // className="mb-3"
-                  onChange={(e) => setImg(e.target.value)}
-                  type="image-url"
-                  placeholder="Image URL"
-                />
-              </FloatingLabel>
-            </Col>
-            <Col md> */}
-          {/* <input
-            placeholder="calories"
-            defaultValue={entry.calories}
-            type="number"
-            onChange={(e) => setCalories(Number(e.target.value))}
-          />
-          <input
-            defaultValue={entry.price}
-            placeholder="price"
-            type="text"
-            onChange={(e) => setPrice(e.target.value)}
-          />
-          <label htmlFor="popularity">
-            Popularity:
-            <select
-              id="popularity"
-              defaultValue={0}
-              onChange={(e) => setPopularity(Number(e.target.value))}
-            >
-              {[0, 1, 2, 3, 4, 5].map((n, i) => (
-                <option key={i} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-          <input
-            defaultValue={entry.notes}
-            placeholder="notes"
-            type="text"
-            onChange={(e) => setNotes(e.target.value)}
-          />
-          <input
-            defaultValue={entry.instructions}
-            placeholder="instructions"
-            type="text"
-            onChange={(e) => setInstructions(e.target.value)}
-          />
-          <input
-            defaultValue={entry.img}
-            placeholder="img URL"
-            type="text"
-            onChange={(e) => setImg(e.target.value)}
-          /> */}
-          {/* {entry ? JSON.stringify(parseToppings(entry.toppings)) : null} */}
-          {/* {status === 'loading' && <p>Loading..</p>}
-          {status === 'error' && <p>Error getting toppings</p>}
-          {status === 'success' &&
-            data.map((t: ToppingType) => (
-              <div key={t.id} className="mb-3">
-                <Form.Check
-                  defaultChecked={parseToppings(entry.toppings).includes(capFirstChar(t.name))}
-                  label={t.name}
-                  value={t.name}
-                  type="checkbox"
-                  onChange={(e) => handleChange(e)}
-                />
-              </div>
-            ))} */}
         </Form>
       </Modal.Body>
       <Modal.Footer>

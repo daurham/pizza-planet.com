@@ -58,7 +58,7 @@ export default function Entry({
             <Card.Img
               src={img}
               alt={name}
-              style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
+              style={{ width: '200px', height: '200px', objectFit: 'cover' }}
             />
             <Card.Title>{name}</Card.Title>
             <Card.Text>Price: {price}</Card.Text>
@@ -78,7 +78,7 @@ export default function Entry({
                   <Card.Img
                     src={img}
                     alt={name}
-                    style={{ maxWidth: '200px', maxHeight: '200px', objectFit: 'cover' }}
+                    style={{ width: '200px', height: '200px', objectFit: 'cover' }}
                   />
                 </Col>
 

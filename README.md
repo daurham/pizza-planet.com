@@ -80,3 +80,7 @@ npm run test
 ## Next Steps:
 - [ ] Create more tests
 - [ ] Implement Auth0
+- [ ] Implement Zustand / remove redux
+- [ ] If no photo is added, provide a default pizza pic
+- [ ] fix pizza sizing
+- [ ] fix instructions drop down sizing

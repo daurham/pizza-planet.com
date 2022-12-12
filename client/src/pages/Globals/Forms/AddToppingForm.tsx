@@ -37,7 +37,7 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
         name: capFirstChar(name),
         price: convertPrice(price),
         pricingMeasurement,
-        img,
+        img: img || 'https://speedwaymedia.com/wp-content/uploads/2019/04/no-image-available.jpg',
       });
       if (success) {
         setPrice('$0.00');
@@ -85,10 +85,6 @@ export default function AddForm({ refetch, handleClose, showModal }: Props) {
                       }
                     }}
                     aria-label="Amount (to the nearest dollar)"
-                    // type="number"
-                    // placeholder="Price"
-                    // onChange={(e) => setPrice(e.target.value)}
-                    // aria-label="Amount (to the nearest dollar)"
                   />
                 </FloatingLabel>
               </InputGroup>

@@ -31,8 +31,6 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
   const [pricingMeasurement, setPricingMeasurement] = useState(entry.pricingMeasurement);
   const [img, setImg] = useState(entry.img); // TODO: Upgrade to "upload img"
 
-  // const { toppings } = useAppSelector((state) => state.toppings);
-
   const deleteEntry = async () => {
     try {
       await axios.delete('/topping', {
@@ -54,7 +52,7 @@ export default function AddForm({ handleClose, showModal, refetch, entry }: Prop
         name: entry.name,
         price: convertPrice(price),
         pricingMeasurement,
-        img,
+        img: img || 'https://speedwaymedia.com/wp-content/uploads/2019/04/no-image-available.jpg',
       });
       if (success) {
         refetch();

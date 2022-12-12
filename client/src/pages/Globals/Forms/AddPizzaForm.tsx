@@ -65,6 +65,7 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
       return;
     }
     try {
+      console.log('img:', img);
       const success = await axios.post('/pizza', {
         name: capFirstChar(name),
         popularity,
@@ -72,7 +73,7 @@ export default function AddForm({ showModal, refetch, handleClose }: Props) {
         price: convertPrice(price),
         notes,
         instructions,
-        img,
+        img: img || 'https://speedwaymedia.com/wp-content/uploads/2019/04/no-image-available.jpg',
         toppings: JSON.stringify(toppingsAdded),
       });
       if (success) {

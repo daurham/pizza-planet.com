@@ -15,6 +15,7 @@ import {
   logIntoUser,
 } from '../controller';
 
+// dotenv.config();
 const router = Router();
 
 router.use((req, res, next) => {

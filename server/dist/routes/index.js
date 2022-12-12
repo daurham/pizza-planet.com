@@ -1,8 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 // https://expressjs.com/en/guide/routing.html
+// Auth0 -> https://auth0.com/docs/quickstart/backend/nodejs/interactive
 const express_1 = require("express");
 const controller_1 = require("../controller");
+// dotenv.config();
 const router = (0, express_1.Router)();
 router.use((req, res, next) => {
     // console.log('req.body:', req.body); // Testing

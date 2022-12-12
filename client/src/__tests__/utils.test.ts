@@ -60,7 +60,6 @@ describe('Utility Functions', () => {
   test('toppingsAreUniqueFromPizzaList should return false', () => {
     const input1 = ['Cheese', '3'];
     const input2 = PizzaList;
-    console.log(input2);
     const expected = false;
 
     expect(toppingsAreUniqueFromPizzaList(input1, input2, 'pizzaName-2')).toBe(expected);

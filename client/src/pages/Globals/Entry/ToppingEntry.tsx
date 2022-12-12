@@ -27,7 +27,7 @@ export default function Entry({ refetch, name, id, price, pricingMeasurement, im
               <Card.Img
                 src={img}
                 alt={name}
-                style={{ maxWidth: '200px', maxHeight: '100px', objectFit: 'cover' }}
+                style={{ width: '200px', height: '100px', objectFit: 'cover' }}
               />
             </Col>
 
